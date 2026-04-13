@@ -1,0 +1,777 @@
+h1 {
+  margin-bottom: 20px;
+}
+
+/* Kartcontainer */
+.map {
+  position: relative;
+  max-width: 1800px;
+}
+
+/* Kartbilder */
+.map-image {
+  width: 100%;
+  display: block;
+}
+
+/* Hover-bilder */
+.hover-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+/* Hotspots */
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+}
+
+/* ===== GRUPP 1 ===== */
+.grupp1 {
+  top: 52%;
+  left: 3%;
+  width: 16%;
+  height: 15%;
+}
+
+.grupp1:hover ~ .hover-grupp1 {
+  opacity: 1;
+}
+
+/* ===== GRUPP 2 ===== */
+.grupp2 {
+  top: 30%;
+  left: 13%;
+  width: 12%;
+  height: 10%;
+}
+
+
+.grupp2:hover ~ .hover-grupp2 {
+  opacity: 1;
+}
+
+/* ===== GRUPP 3 ===== */
+.grupp3 {
+  top: 38%;
+  left: 68%;
+  width: 10%;
+  height: 13%;
+}
+
+.grupp3:hover ~ .hover-grupp3 {
+  opacity: 1;
+}
+
+/* ===== GRUPP 4 & 5 (NY) ===== */
+.grupp45 {
+  top: 33%;
+  left: 27%;
+  width: 16%;
+  height: 12%;
+}
+.grupp45:hover ~ .hover-grupp45 {
+  opacity: 1;
+}
+
+/* ===== MATSALEN (NY) ===== */
+.matsalen {
+  top: 21%;
+  left: 55%;
+  width: 8%;
+  height: 10%;
+}
+.matsalen:hover ~ .hover-matsalen {
+  opacity: 1;
+}
+
+/* ===== SLANGBELLAN (NY) ===== */
+.slangbellan {
+  top: 23%;
+  left: 78%;
+  width: 17%;
+  height: 19%;
+}
+.slangbellan:hover ~ .hover-slangbellan {
+  opacity: 1;
+}
+
+/* =====================================================
+   VÄND-VY – HOTSPOTS
+   (placeras visuellt, precis som normal vy)
+   ===================================================== */
+
+/* Grupp 1 – VÄND */
+.vand-grupp1 {
+  top: 28%;
+  left: 79%;
+  width: 12%;
+  height: 9%;
+}
+.vand-grupp1:hover ~ .hover-vand-grupp1 {
+  opacity: 1;
+}
+
+/* Grupp 2 – VÄND */
+.vand-grupp2 {
+  top: 46%;
+  left: 80%;
+  width: 15%;
+  height: 13%;
+}
+.vand-grupp2:hover ~ .hover-vand-grupp2 {
+  opacity: 1;
+}
+
+/* Grupp 3 – VÄND */
+.vand-grupp3 {
+  top: 38%;
+  left: 29%;
+  width: 10%;
+  height: 10%;
+}
+.vand-grupp3:hover ~ .hover-vand-grupp3 {
+  opacity: 1;
+}
+
+/* Grupp 4 & 5 – VÄND */
+.vand-grupp45 {
+  top: 44%;
+  left: 63%;
+  width: 12%;
+  height: 14%;
+}
+.vand-grupp45:hover ~ .hover-vand-grupp45 {
+  opacity: 1;
+}
+
+/* Matsalen – VÄND */
+.vand-matsalen {
+  top: 62%;
+  left: 40%;
+  width: 12%;
+  height: 16%;
+}
+.vand-matsalen:hover ~ .hover-vand-matsalen {
+  opacity: 1;
+}
+
+/* Slangbellan – VÄND */
+.vand-slangbellan {
+  top: 44%;
+  left: 6%;
+  width: 20%;
+  height: 28%;
+}
+.vand-slangbellan:hover ~ .hover-vand-slangbellan {
+  opacity: 1;
+}
+
+/* =========================
+   VY-VÄXLARE
+   ========================= */
+
+.view-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+}
+
+.view-toggle a {
+  display: inline-block;
+  padding: 8px 14px;
+  background: rgba(0, 120, 0, 0.85);
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.view-toggle a:hover {
+  background: rgba(0, 160, 0, 0.95);
+}
+
+/* =========================
+   GRUPPSIDA – GEMENSAM STIL
+   ========================= */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ffffff;
+    color: #000;
+    text-align: center;
+    position: relative;
+}
+
+.back-link {
+    text-align: left;
+    margin: 20px;
+}
+
+.back-link a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #007a3d;
+}
+
+h1 {
+    margin-top: 10px;
+}
+
+.specialization {
+    text-align: center;
+    font-style: italic !important;
+    font-weight: normal !important;
+    margin-top: -15px;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+    color: #444;
+}
+
+.room-image img {
+    width: 75%;
+    max-width: 900px;
+    border-radius: 6px;
+}
+
+.content-section {
+    max-width: 800px;
+    margin: 40px auto;
+    text-align: center;
+}
+
+.content-section h2 {
+    margin-bottom: 15px;
+}
+
+.content-section p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 40px 0;
+}
+
+.action-button {
+    background-color: #9fd7e5;
+    padding: 15px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #000;
+    transition: background-color 0.2s ease;
+}
+
+.action-button:hover {
+    background-color: #7fc3d6;
+}
+
+/* =========================
+   TEXTLAYOUT – VÄNSTERSTÄLLD
+   ========================= */
+
+.content-section.left {
+    text-align: left;
+}
+
+.content-section.left h2 {
+    font-size: 22px;
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+.content-section.left p {
+    margin-bottom: 15px;
+}
+
+.content-section.left ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.content-section.left li {
+    margin-bottom: 8px;
+
+}
+/* =========================
+   TEKNIKLISTA – LAYOUT
+   ========================= */
+
+.center-title {
+    text-align: center;
+    margin: 30px 0 40px 0;
+    letter-spacing: 2px;
+}
+
+.tech-grid {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.tech-item {
+    text-decoration: none;
+    color: #000;
+    text-align: center;
+    width: 140px;
+}
+
+.tech-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    transition: all 0.2s ease;
+}
+
+.tech-item:hover .tech-icon {
+    background: #cfeee0;
+    transform: scale(1.05);
+}
+
+.tech-label {
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.section-divider {
+    width: 60%;
+    margin: 40px auto;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.center-subtitle {
+    text-align: center;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+}
+
+.tech-description {
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    text-align: left;
+}
+
+.tech-description p {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.symbol-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.symbol-wrapper img {
+    max-width: 220px;
+    opacity: 0.95;
+}
+
+.intro-text {
+    max-width: 700px;
+    margin: 0 auto 40px auto;
+    text-align: left;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+.competence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    max-width: 900px;
+    margin: 0 auto 60px auto;
+}
+
+.competence-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #fafafa;
+}
+
+.competence-card h3 {
+    margin-top: 0;
+    font-size: 1.1rem;
+}
+
+.competence-card p {
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* =========================
+   TEKNIKLAYOUT – ÅTERSTÄLLD
+   ========================= */
+
+.center-title {
+    text-align: center;
+    margin: 30px 0 40px 0;
+    letter-spacing: 2px;
+    font-size: 32px;
+}
+
+.center-subtitle {
+    text-align: center;
+    margin: 30px 0 20px 0;
+    letter-spacing: 1px;
+    font-size: 20px;
+}
+
+.tech-grid {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.tech-item {
+    text-decoration: none;
+    color: #000;
+    text-align: center;
+    width: 140px;
+}
+
+.tech-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 10px auto;
+    border-radius: 50%;
+    background: #f2f2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.tech-item:hover .tech-icon {
+    background: #cfeee0;
+    transform: scale(1.05);
+}
+
+.tech-label {
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+.section-divider {
+    width: 60%;
+    margin: 40px auto;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.tech-description {
+    max-width: 800px;
+    margin: 0 auto 60px auto;
+    text-align: left;
+    line-height: 1.6;
+}
+
+/* =========================
+   TEKNIK – DETALJSIDOR
+   ========================= */
+
+.tech-description {
+    max-width: 800px;
+    margin: 0 auto 40px auto;
+    text-align: left;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+.tech-description ul {
+    margin-left: 20px;
+    margin-top: 15px;
+}
+
+.tech-description li {
+    margin-bottom: 8px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.action-button {
+    background-color: #9fd7e5;
+    padding: 15px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #000;
+}
+
+.action-button:hover {
+    background-color: #7fc3d6;
+}
+
+/* =========================
+   TVINGAD LAYOUT – TEKNIKDETALJ
+   ========================= */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.center-title {
+    text-align: center;
+    font-size: 32px;
+    margin: 30px 0 40px 0;
+}
+
+.center-subtitle {
+    text-align: center;
+    font-size: 20px;
+    margin: 30px 0 20px 0;
+}
+
+.tech-description {
+    max-width: 800px !important;
+    margin: 0 auto 40px auto !important;
+    text-align: left !important;
+    line-height: 1.6 !important;
+    font-size: 16px !important;
+}
+
+.tech-description p {
+    margin-bottom: 15px !important;
+}
+
+.tech-description ul {
+    margin-left: 20px !important;
+}
+
+.tech-description li {
+    margin-bottom: 8px !important;
+}
+
+.section-divider {
+    width: 60%;
+    margin: 40px auto !important;
+    border: none;
+    border-top: 1px solid #ccc;
+}
+
+.button-row {
+    display: flex !important;
+    justify-content: center !important;
+    margin: 30px 0 !important;
+}
+
+.action-button {
+    background-color: #9fd7e5;
+    padding: 15px 25px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #000;
+}
+
+.action-button:hover {
+    background-color: #7fc3d6;
+}
+
+/* =========================
+   GEMENSAM SIDSTRUKTUR
+   ========================= */
+
+.page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+}
+
+.content-card {
+    background-color: #fafafa;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.content-card h2 {
+    margin-top: 40px;
+    margin-bottom: 15px;
+    font-size: 22px;
+}
+
+.content-card ul {
+    padding-left: 20px;
+}
+
+.content-card li {
+    margin-bottom: 8px;
+}
+
+.intro-text {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.back-link {
+    margin-bottom: 20px;
+}
+
+.back-link a {
+    text-decoration: none;
+    font-weight: bold;
+    color: #2a7c8a;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.room-image {
+    width: 75%;
+    max-width: 900px;
+    display: block;
+    margin: 0 auto 30px auto;
+    border-radius: 10px;
+}
+/* Grupp 2 – tätare teknikgrid */
+
+.tech-grid-5 {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.tech-grid-5 .tech-item {
+    width: 120px;
+}
+
+/* Vänsterställ ENDAST punktlistor */
+
+.content-card ul {
+    display: inline-block;
+    text-align: left;
+    margin-top: 15px;
+}
+
+.content-card li {
+    margin-bottom: 8px;
+}
+
+.read-button {
+    display: inline-block;
+    margin: 15px 0 25px 0;
+    padding: 10px 18px;
+    background-color: #e6f2f5;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.read-button:hover {
+    background-color: #cfe8ef;
+}
+
+/* Placera Läs upp uppe till höger */
+
+.read-top {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.read-button {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: none;
+    background-color: #e6f2f5;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.read-button:hover {
+    background-color: #cfe8ef;
+}
+
+/* =========================
+   STUDION – NORMAL VY
+   ========================= */
+
+.grupp-studion {
+    position: absolute;
+    top: 22%;
+    left: 64%;
+    width: 12%;
+    height: 9%;
+}
+
+.grupp-studion:hover ~ .hover-grupp-studion {
+    opacity: 1;
+}
+
+
+/* =========================
+   STUDION – VÄND VY
+   ========================= */
+
+.vand-studion {
+    position: absolute;
+    top: 60%;
+    left: 27%;
+    width: 12%;
+    height: 13%;
+}
+
+.vand-studion:hover ~ .hover-vand-studion {
+    opacity: 1;
+}
+
+.structure-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 4;
+}
+
+.show-structure .structure-overlay {
+  opacity: 1;
+}
+
+.map-view {
+  display: none;
+}
+
+.map-view.active-view {
+  display: block;
+}
+
