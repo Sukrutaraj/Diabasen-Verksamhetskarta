@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Diabasen – Verksamhetskarta</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="view-toggle">
+  <button id="toggleStructure" class="structure-btn">Visa grupper</button>
+  <button id="toggleView" class="structure-btn">Vänd vy</button>
+</div>
+
+<!-- ===================== -->
+<!-- NORMAL VY -->
+<!-- ===================== -->
+<div class="map-view active-view" id="normalView">
+  <div class="map">
+
+    <!-- Grundbild -->
+    <img src="images/hela-diabasen.png"
+         alt="Hela Diabasen"
+         class="map-image base-image">
+
+    <!-- Struktur-overlay -->
+    <img src="images/hela-hover-struktur.png"
+         alt="Struktur vy"
+         class="structure-overlay">
+
+    <!-- Hotspots -->
+    <a href="groups/grupp1.html" class="hotspot grupp1"></a>
+    <a href="groups/grupp2.html" class="hotspot grupp2"></a>
+    <a href="groups/grupp3.html" class="hotspot grupp3"></a>
+    <a href="groups/grupp45.html" class="hotspot grupp45"></a>
+    <a href="groups/matsalen.html" class="hotspot matsalen"></a>
+    <a href="groups/slangbellan.html" class="hotspot slangbellan"></a>
+    <a href="groups/studion.html" class="hotspot grupp-studion"></a>
+
+    <!-- Hover-bilder -->
+    <img src="images/hover-grupp1.png" class="map-image hover-image hover-grupp1" alt="">
+    <img src="images/hover-grupp2.png" class="map-image hover-image hover-grupp2" alt="">
+    <img src="images/hover-grupp3.png" class="map-image hover-image hover-grupp3" alt="">
+    <img src="images/hover-grupp45.png" class="map-image hover-image hover-grupp45" alt="">
+    <img src="images/hover-matsalen.png" class="map-image hover-image hover-matsalen" alt="">
+    <img src="images/hover-slangbellan.png" class="map-image hover-image hover-slangbellan" alt="">
+    <img src="images/hover-studion.png" class="map-image hover-image hover-grupp-studion" alt="">
+
+  </div>
+</div>
+
+<!-- ===================== -->
+<!-- VÄND VY -->
+<!-- ===================== -->
+<div class="map-view" id="vandView">
+  <div class="map">
+
+    <!-- Grundbild -->
+    <img src="images/hela-diabasen-vand.png"
+         alt="Hela Diabasen vänd"
+         class="map-image base-image">
+
+    <!-- Struktur-overlay -->
+    <img src="images/hela-hover-vand-struktur.png"
+         alt="Struktur vy vänd"
+         class="structure-overlay">
+
+    <!-- Hotspots -->
+    <a href="groups/grupp1.html" class="hotspot vand-grupp1"></a>
+    <a href="groups/grupp2.html" class="hotspot vand-grupp2"></a>
+    <a href="groups/grupp3.html" class="hotspot vand-grupp3"></a>
+    <a href="groups/grupp45.html" class="hotspot vand-grupp45"></a>
+    <a href="groups/matsalen.html" class="hotspot vand-matsalen"></a>
+    <a href="groups/slangbellan.html" class="hotspot vand-slangbellan"></a>
+    <a href="groups/studion.html" class="hotspot vand-grupp-studion"></a>
+
+    <!-- Hover-bilder -->
+    <img src="images/hover-vand-grupp1.png" class="map-image hover-image hover-vand-grupp1" alt="">
+    <img src="images/hover-vand-grupp2.png" class="map-image hover-image hover-vand-grupp2" alt="">
+    <img src="images/hover-vand-grupp3.png" class="map-image hover-image hover-vand-grupp3" alt="">
+    <img src="images/hover-vand-grupp45.png" class="map-image hover-image hover-vand-grupp45" alt="">
+    <img src="images/hover-vand-matsalen.png" class="map-image hover-image hover-vand-matsalen" alt="">
+    <img src="images/hover-vand-slangbellan.png" class="map-image hover-image hover-vand-slangbellan" alt="">
+    <img src="images/hover-vand-studion.png" class="map-image hover-image hover-vand-grupp-studion" alt="">
+
+  </div>
+</div>
+
+<script src="js/read.js"></script>
+<script src="js/map-controls.js"></script>
+
+</body>
+</html>
