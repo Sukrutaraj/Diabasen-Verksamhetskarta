@@ -7,7 +7,12 @@ let isReading = false;
 let currentSpeech = null;
 let currentAudio = null;
 
-/* Röster – laddas asynkront på mobil */
+/* =========================
+   RÖSTER – laddas asynkront
+   (mobil och Chrome laddar röster
+   efter sidan laddats, därav retry)
+   ========================= */
+
 let voices = [];
 
 function loadVoices() {
@@ -16,6 +21,26 @@ function loadVoices() {
 
 speechSynthesis.onvoiceschanged = loadVoices;
 loadVoices();
+
+/* Vänta tills röster finns – max 3 sek */
+function waitForVoices() {
+    return new Promise(resolve => {
+        if (speechSynthesis.getVoices().length > 0) {
+            voices = speechSynthesis.getVoices();
+            resolve();
+            return;
+        }
+        let attempts = 0;
+        const interval = setInterval(() => {
+            voices = speechSynthesis.getVoices();
+            if (voices.length > 0 || attempts > 30) {
+                clearInterval(interval);
+                resolve();
+            }
+            attempts++;
+        }, 100);
+    });
+}
 
 /* =========================
    HÄMTA LÄSBAR TEXT
@@ -29,11 +54,13 @@ function getReadableText() {
 }
 
 /* =========================
-   GOOGLE ÖVERSÄTTNING
-   (använder googleapis – stabilare än translate.google.com)
+   ÖVERSÄTTNING
+   Primär: Google (gtx) – ingen API-nyckel
+   Fallback: MyMemory – öppen, ingen CORS
    ========================= */
 
 async function translateText(text, targetLang) {
+    /* Primär: Google inofficiell */
     try {
         const url =
             'https://translate.googleapis.com/translate_a/single?client=gtx&sl=sv&tl=' +
@@ -41,16 +68,37 @@ async function translateText(text, targetLang) {
             '&dt=t&q=' +
             encodeURIComponent(text);
         const res = await fetch(url);
+        if (!res.ok) throw new Error('Google translate failed');
         const data = await res.json();
-        return data[0].map(x => x[0]).join('');
+        const result = data[0].map(x => x[0]).join('');
+        if (result && result.length > 0) return result;
+        throw new Error('Empty result');
     } catch (e) {
-        console.warn('Översättning misslyckades:', e);
-        return text; /* fallback: läs originaltexten */
+        console.warn('Google translate misslyckades, försöker MyMemory:', e);
     }
+
+    /* Fallback: MyMemory (gratis, öppen CORS, 5000 tecken/dag) */
+    try {
+        /* Korta ner texten om den är lång */
+        const shortText = text.length > 500 ? text.slice(0, 500) + '...' : text;
+        const url =
+            'https://api.mymemory.translated.net/get?q=' +
+            encodeURIComponent(shortText) +
+            '&langpair=sv|' +
+            encodeURIComponent(targetLang);
+        const res = await fetch(url);
+        const data = await res.json();
+        if (data.responseStatus === 200) return data.responseData.translatedText;
+    } catch (e) {
+        console.warn('MyMemory misslyckades:', e);
+    }
+
+    /* Sista utväg: returnera originaltexten */
+    return text;
 }
 
 /* =========================
-   STARTA UPPLÄSNING
+   STARTA UPPLÄSNING (Web Speech)
    ========================= */
 
 function startReading(text, langCode) {
@@ -58,14 +106,19 @@ function startReading(text, langCode) {
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = langCode;
-    utterance.rate = 0.95;
+    utterance.rate = 0.9;
 
-    /* Försök hitta matchande röst */
-    const match = voices.find(v => v.lang.toLowerCase().startsWith(langCode.toLowerCase().slice(0, 2)));
+    /* Matcha röst på språkkod (t.ex. "ar", "ar-SA", "ar-EG") */
+    const prefix = langCode.toLowerCase().slice(0, 2);
+    const match = voices.find(v => v.lang.toLowerCase().startsWith(prefix));
     if (match) utterance.voice = match;
 
-    utterance.onend = () => { isReading = false; updateButtons(); };
-    utterance.onerror = () => { isReading = false; updateButtons(); };
+    utterance.onend  = () => { isReading = false; updateButtons(); };
+    utterance.onerror = (e) => {
+        console.warn('SpeechSynthesis fel:', e);
+        isReading = false;
+        updateButtons();
+    };
 
     speechSynthesis.speak(utterance);
     currentSpeech = utterance;
@@ -112,7 +165,18 @@ async function readEnglish() {
 
 /* =========================
    ARABISKA
-   (använder Google TTS via googleapis för bättre arabisk röst)
+   
+   Strategi:
+   1. Vänta tills röster är laddade
+   2. Hitta arabisk röst (ar-SA, ar-EG, ar, osv.)
+   3. Översätt texten till arabiska
+   4. Läs upp med Web Speech API
+   
+   Arabiska röster finns inbyggt i:
+   - Windows: Microsoft Naayf (ar-SA)
+   - macOS/iOS: Maged (ar-SA)  
+   - Android: Google Arabic
+   - Chrome på desktop: Google arabisk röst
    ========================= */
 
 async function readArabic() {
@@ -122,18 +186,92 @@ async function readArabic() {
 
     setButtonLoading('ar');
 
-    /* Försök webb-TTS med arabisk röst först */
-    const arabicVoice = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('ar'));
-    if (arabicVoice) {
-        const translated = await translateText(text, 'ar');
-        startReading(translated, 'ar');
-        return;
-    }
+    /* Vänta på att röster laddas (viktigt på mobil) */
+    await waitForVoices();
 
-    /* Fallback: Google TTS (chunkat för långa texter) */
+    /* Sök arabisk röst – testa flera varianter */
+    const arabicVoice =
+        voices.find(v => v.lang === 'ar-SA') ||
+        voices.find(v => v.lang === 'ar-EG') ||
+        voices.find(v => v.lang.toLowerCase().startsWith('ar'));
+
+    /* Översätt texten */
     const translated = await translateText(text, 'ar');
-    const chunks = chunkText(translated, 180);
-    playChunks(chunks, 'ar');
+
+    if (arabicVoice) {
+        /* Använd inbyggd arabisk röst */
+        stopAll();
+        const utterance = new SpeechSynthesisUtterance(translated);
+        utterance.voice = arabicVoice;
+        utterance.lang  = arabicVoice.lang;
+        utterance.rate  = 0.85; /* Lite långsammare för tydlighet */
+        utterance.onend  = () => { isReading = false; updateButtons(); };
+        utterance.onerror = () => { isReading = false; updateButtons(); };
+        speechSynthesis.speak(utterance);
+        currentSpeech = utterance;
+        isReading = true;
+        updateButtons();
+    } else {
+        /* Ingen arabisk röst hittades – visa texten istället */
+        showArabicText(translated);
+        isReading = false;
+        updateButtons();
+    }
+}
+
+/* =========================
+   VISA ARABISK TEXT
+   (visas om ingen arabisk röst finns)
+   ========================= */
+
+function showArabicText(text) {
+    /* Ta bort eventuell befintlig ruta */
+    const old = document.getElementById('arabic-text-box');
+    if (old) old.remove();
+
+    const box = document.createElement('div');
+    box.id = 'arabic-text-box';
+    box.style.cssText = `
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-height: 50vh;
+        overflow-y: auto;
+        background: #fff8e1;
+        border-top: 3px solid #f5c518;
+        padding: 20px 24px;
+        font-size: 1.2rem;
+        line-height: 2;
+        direction: rtl;
+        text-align: right;
+        font-family: 'Arial', sans-serif;
+        z-index: 9999;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    `;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.textContent = '✕ إغلاق';
+    closeBtn.style.cssText = `
+        display: block;
+        margin-bottom: 12px;
+        padding: 8px 16px;
+        background: #f5c518;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-family: Arial, sans-serif;
+    `;
+    closeBtn.onclick = () => box.remove();
+
+    const content = document.createElement('p');
+    content.style.margin = '0';
+    content.textContent = text;
+
+    box.appendChild(closeBtn);
+    box.appendChild(content);
+    document.body.appendChild(box);
 }
 
 /* =========================
@@ -150,48 +288,10 @@ async function readSomali() {
 }
 
 /* =========================
-   SPELA LJUD I DELAR (Google TTS fallback)
-   ========================= */
-
-function chunkText(text, size) {
-    const chunks = [];
-    for (let i = 0; i < text.length; i += size) {
-        chunks.push(text.slice(i, i + size));
-    }
-    return chunks;
-}
-
-function playChunks(chunks, lang) {
-    isReading = true;
-    updateButtons();
-    let i = 0;
-
-    function next() {
-        if (!isReading || i >= chunks.length) {
-            isReading = false;
-            updateButtons();
-            return;
-        }
-        const url =
-            'https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob&tl=' +
-            encodeURIComponent(lang) +
-            '&q=' +
-            encodeURIComponent(chunks[i]);
-        currentAudio = new Audio(url);
-        currentAudio.onended = () => { i++; next(); };
-        currentAudio.onerror = () => { isReading = false; updateButtons(); };
-        currentAudio.play().catch(() => { isReading = false; updateButtons(); });
-    }
-
-    next();
-}
-
-/* =========================
    LADDNINGSINDIKATOR
    ========================= */
 
 function setButtonLoading(lang) {
-    const map = { sv: '🔊 Svenska', en: '🔊 English', ar: '🔊 العربية', so: '🔊 Somali' };
     document.querySelectorAll('.read-btn-' + lang).forEach(btn => {
         btn.textContent = '⏳ Laddar...';
     });
@@ -202,19 +302,15 @@ function setButtonLoading(lang) {
    ========================= */
 
 function updateButtons() {
-    /* Svenska stopp-knapp */
     document.querySelectorAll('.stop-button').forEach(btn => {
         btn.textContent = isReading ? '⏹ Stoppa' : '🔊 Svenska';
     });
-    /* Engelska */
     document.querySelectorAll('.read-btn-en').forEach(btn => {
         btn.textContent = isReading ? '⏹ Stoppa' : '🔊 English';
     });
-    /* Arabiska */
     document.querySelectorAll('.read-btn-ar').forEach(btn => {
         btn.textContent = isReading ? '⏹ Stoppa' : '🔊 العربية';
     });
-    /* Somaliska */
     document.querySelectorAll('.read-btn-so').forEach(btn => {
         btn.textContent = isReading ? '⏹ Stoppa' : '🔊 Somali';
     });
