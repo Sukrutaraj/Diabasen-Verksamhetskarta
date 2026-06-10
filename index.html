@@ -7,7 +7,6 @@
 
   <title>Diabasen – Verksamhetskarta</title>
   <link rel="stylesheet" href="css/style.css">
-<script src="https://code.responsivevoice.org/responsivevoice.js?key=T0bKfJIE"></script>
 </head>
 <body>
 
@@ -89,6 +88,36 @@
 
   </div>
 </div>
+
+
+<a href="teknik-oversikt.html" class="staff-link" title="Tekniköversikt för personal">
+  📋
+</a>
+
+<style>
+.staff-link {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.2s, background 0.2s;
+  z-index: 50;
+}
+.staff-link:hover {
+  opacity: 1;
+  background: rgba(255,255,255,0.95);
+}
+</style>
 
 <script src="js/read.js"></script>
 <script src="js/map-controls.js"></script>
