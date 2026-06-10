@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tekniköversikt – Diabasen</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
+    .page-container { max-width: 900px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { font-size: 1.6rem; color: #2c3e50; margin-bottom: 6px; }
+    .subtitle { color: #666; font-size: 0.95rem; margin-bottom: 28px; }
+
+    .group-section { margin-bottom: 32px; }
+    .group-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      background: #2c5f8a;
+      padding: 8px 14px;
+      border-radius: 8px 8px 0 0;
+      margin: 0;
+    }
+    .group-rows { border: 2px solid #d0d9e4; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+
+    .tech-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      background: #fff;
+      border-bottom: 1px solid #edf0f3;
+      flex-wrap: wrap;
+    }
+    .tech-row:last-child { border-bottom: none; }
+    .tech-row:hover { background: #f7f9fb; }
+
+    .tech-name {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #2c3e50;
+      min-width: 160px;
+      flex: 1;
+    }
+
+    .cl-chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 3; }
+
+    .cl-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #e8f4e8;
+      color: #1b6b2f;
+      border: 1px solid #b7dfbf;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .cl-chip:hover { background: #d0edcf; }
+
+    .cl-empty { color: #aaa; font-size: 0.85rem; font-style: italic; }
+
+    .add-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: 1.5px dashed #aac4de;
+      color: #2c5f8a;
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .add-btn:hover { background: #e8f0f8; border-color: #2c5f8a; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: #fff;
+      border-radius: 12px;
+      padding: 26px 24px 22px;
+      width: 90%;
+      max-width: 420px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+    .modal h2 { font-size: 1.05rem; margin: 0 0 16px; color: #2c3e50; }
+    .modal label { font-size: 0.83rem; font-weight: 600; color: #555; display: block; margin-bottom: 3px; }
+    .modal input {
+      width: 100%; box-sizing: border-box;
+      padding: 8px 11px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 7px;
+      font-size: 0.92rem;
+      font-family: inherit;
+      margin-bottom: 10px;
+    }
+    .modal input:focus { outline: none; border-color: #2c5f8a; }
+    .modal-btns { display: flex; gap: 10px; margin-top: 6px; }
+    .modal-save {
+      background: #2c5f8a; color: #fff;
+      border: none; border-radius: 8px;
+      padding: 9px 18px; font-size: 0.92rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .modal-save:hover { background: #1e4a6e; }
+    .modal-save:disabled { opacity: 0.6; cursor: not-allowed; }
+    .modal-cancel {
+      background: #f0f0f0; color: #555;
+      border: none; border-radius: 8px;
+      padding: 9px 18px; font-size: 0.92rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .modal-cancel:hover { background: #e0e0e0; }
+    .modal-msg {
+      font-size: 0.88rem; padding: 7px 11px;
+      border-radius: 7px; margin-top: 8px; display: none;
+    }
+    .modal-msg.ok { background: #e6f4ea; color: #1b6b2f; border: 1px solid #b7dfbf; }
+    .modal-msg.err { background: #fde8e8; color: #a12020; border: 1px solid #f5b8b8; }
+
+    .loading-msg { color: #888; font-size: 0.9rem; padding: 6px 14px; }
+
+    .stats-bar {
+      display: flex; gap: 20px; flex-wrap: wrap;
+      background: #fff; border-radius: 10px;
+      padding: 14px 18px; margin-bottom: 24px;
+      border: 1px solid #e0e6ed;
+      font-size: 0.9rem; color: #555;
+    }
+    .stat { display: flex; align-items: center; gap: 6px; }
+    .stat strong { color: #2c3e50; font-size: 1.05rem; }
+
+
+    /* Lösenordsskärm */
+    .pwd-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 60vh;
+      text-align: center;
+    }
+    .pwd-screen h2 { color: #2c3e50; margin-bottom: 8px; }
+    .pwd-screen p { color: #666; font-size: 0.93rem; margin-bottom: 24px; }
+    .pwd-box {
+      background: #fff;
+      border: 2px solid #d0d9e4;
+      border-radius: 12px;
+      padding: 28px 28px 22px;
+      width: 100%;
+      max-width: 320px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .pwd-box label { font-size: 0.85rem; font-weight: 600; color: #555; display: block; margin-bottom: 6px; text-align: left; }
+    .pwd-box input {
+      width: 100%; box-sizing: border-box;
+      padding: 10px 12px;
+      border: 1.5px solid #d0d7de;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      margin-bottom: 12px;
+    }
+    .pwd-box input:focus { outline: none; border-color: #2c5f8a; }
+    .pwd-login-btn {
+      width: 100%;
+      background: #2c5f8a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .pwd-login-btn:hover { background: #1e4a6e; }
+    .pwd-err {
+      color: #a12020;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+    .main-content { display: none; }
+
+    @media (max-width: 520px) {
+      .tech-row { flex-direction: column; align-items: flex-start; }
+      .tech-name { min-width: unset; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="pwd-screen" id="pwd-screen">
+  <div class="pwd-box">
+    <h2>🔒 Tekniköversikt</h2>
+    <p>Endast för personal</p>
+    <label>Lösenord</label>
+    <input type="password" id="pwd-input" placeholder="Ange lösenord" />
+    <button class="pwd-login-btn" id="pwd-login-btn">Logga in</button>
+    <div class="pwd-err" id="pwd-err">Fel lösenord, försök igen.</div>
+  </div>
+</div>
+
+<div class="main-content" id="main-content">
+<div class="page-container">
+  <div class="back-link"><a href="index.html">← Tillbaka till startsidan</a></div>
+
+  <h1>📋 Tekniköversikt – Diabasen</h1>
+  <p class="subtitle">Alla teknikchecklistor samlade på ett ställe. Gröna märken = checklista finns. Klicka "+" för att lägga till.</p>
+
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat">Laddar statistik…</div>
+  </div>
+
+  <div id="overview-container">
+    <div class="loading-msg">Hämtar checklistor…</div>
+  </div>
+</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h2 id="modal-title">Lägg till checklista</h2>
+    <label>Lösenord</label>
+    <input type="password" id="modal-pwd" placeholder="Teknik0426" />
+    <label>Titel på checklistan</label>
+    <input type="text" id="modal-cl-title" placeholder="T.ex. Starta datorn" />
+    <label>Länk till checklistan</label>
+    <input type="url" id="modal-url" placeholder="https://sukrutaraj.github.io/digital-checklist-maker/…" />
+    <label>Ditt namn</label>
+    <input type="text" id="modal-name" placeholder="Förnamn" />
+    <div class="modal-btns">
+      <button class="modal-save" id="modal-save">Spara</button>
+      <button class="modal-cancel" id="modal-cancel">Avbryt</button>
+    </div>
+    <div class="modal-msg" id="modal-msg"></div>
+  </div>
+</div>
+
+<script>
+const REPO   = 'sukrutaraj/Diabasen-Verksamhetskarta';
+const BRANCH = 'main';
+const FOLDER = 'checklists';
+const BASE   = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
+const API    = 'https://api.github.com/repos/' + REPO + '/contents/';
+const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a3363037702605532085a5f005a5b6e';
+const PWD_HASH  = '79b497e2';
+
+// Alla tekniksidor grupperade
+const TECH_PAGES = [
+  { group: 'Grupp 1', items: [
+    { name: '3D-skrivare',    file: 'grupp1-3d' },
+    { name: 'Datorer',        file: 'grupp1-datorer' },
+    { name: 'iPad & Mobil',   file: 'grupp1-mobil' },
+    { name: 'Musik & Inspelning', file: 'grupp1-musik' },
+  ]},
+  { group: 'Grupp 2', items: [
+    { name: 'Datorer',        file: 'grupp2-datorer' },
+    { name: 'Fliptavla',      file: 'grupp2-fliptavla' },
+    { name: 'iPad & Telefon', file: 'grupp2-ipad' },
+    { name: 'Tidshjälpmedel', file: 'grupp2-tid' },
+    { name: 'Touch',          file: 'grupp2-touch' },
+  ]},
+  { group: 'Grupp 3', items: [
+    { name: 'Fliptavla',      file: 'grupp3-fliptavla' },
+    { name: 'iPad',           file: 'grupp3-ipad' },
+  ]},
+  { group: 'Grupp 4 & 5', items: [
+    { name: 'AI',             file: 'grupp45-ai' },
+    { name: 'Datorer',        file: 'grupp45-datorer' },
+    { name: 'iPad',           file: 'grupp45-ipad' },
+    { name: 'Speldatorer',    file: 'grupp45-speldatorer' },
+  ]},
+  { group: 'Matsalen', items: [
+    { name: 'Datorer',        file: 'matsalen-datorer' },
+    { name: 'Fliptavla',      file: 'matsalen-flip' },
+  ]},
+  { group: 'Slångbellan', items: [
+    { name: '3D-skrivare',    file: 'slangbellan-3d' },
+    { name: 'Fliptavla',      file: 'slangbellan-fliptavla' },
+    { name: 'Info',           file: 'slangbellan-info' },
+    { name: 'Makey Makey',    file: 'slangbellan-makeymakey' },
+    { name: 'Mobil',          file: 'slangbellan-mobil' },
+    { name: 'Planering',      file: 'slangbellan-planering' },
+  ]},
+];
+
+// --- Krypto ---
+function checkPwd(pwd) {
+  let h = 0;
+  for (let i = 0; i < pwd.length; i++) h = (Math.imul(31, h) + pwd.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(16) === PWD_HASH;
+}
+function xorStr(str, key) {
+  let out = '';
+  for (let i = 0; i < str.length; i++)
+    out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return out;
+}
+function decodeToken(enc, pwd) {
+  const bytes = enc.match(/.{1,2}/g).map(h => String.fromCharCode(parseInt(h, 16)));
+  return xorStr(bytes.join(''), pwd);
+}
+
+// --- GitHub API ---
+async function ghGet(path) {
+  const r = await fetch(API + path + '?ref=' + BRANCH, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}
+async function ghPut(path, content, message, token) {
+  const r = await fetch(API + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify({ message, content: btoa(unescape(encodeURIComponent(content))), branch: BRANCH })
+  });
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.message || r.status); }
+  return r.json();
+}
+
+// --- Hämta alla checklistor ---
+async function fetchAllChecklists() {
+  try {
+    const files = await ghGet(FOLDER);
+    const metaFiles = files.filter(f => f.name.startsWith('meta_') && f.name.endsWith('.json'));
+    const items = [];
+    for (const mf of metaFiles) {
+      try {
+        const r = await fetch(BASE + FOLDER + '/' + mf.name);
+        if (!r.ok) continue;
+        const meta = await r.json();
+        items.push({ ...meta, _file: mf.name, _sha: mf.sha });
+      } catch(e) {}
+    }
+    return items;
+  } catch(e) { return []; }
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// --- Rendera översikt ---
+function render(allChecklists) {
+  const container = document.getElementById('overview-container');
+  container.innerHTML = '';
+
+  let totalPages = 0, pagesWithCl = 0;
+
+  TECH_PAGES.forEach(group => {
+    const section = document.createElement('div');
+    section.className = 'group-section';
+    section.innerHTML = `<h2 class="group-title">${group.group}</h2><div class="group-rows" id="rows-${group.group}"></div>`;
+    container.appendChild(section);
+
+    const rowsEl = section.querySelector('.group-rows');
+
+    group.items.forEach(item => {
+      totalPages++;
+      // Hitta checklistor som matchar denna sida (baserat på filnamn i title eller addedBy-fältet)
+      // Vi matchar via ett "page"-fält om det finns, annars visar vi alla
+      const pageCls = allChecklists.filter(cl => cl.page === item.file);
+
+      if (pageCls.length > 0) pagesWithCl++;
+
+      const row = document.createElement('div');
+      row.className = 'tech-row';
+
+      const nameEl = document.createElement('div');
+      nameEl.className = 'tech-name';
+      nameEl.textContent = item.name;
+
+      const chipsEl = document.createElement('div');
+      chipsEl.className = 'cl-chips';
+
+      if (pageCls.length === 0) {
+        chipsEl.innerHTML = `<span class="cl-empty">Ingen checklista än</span>`;
+      } else {
+        pageCls.forEach(cl => {
+          const a = document.createElement('a');
+          a.className = 'cl-chip';
+          a.href = cl.url;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.innerHTML = `✅ ${escHtml(cl.title)}`;
+          chipsEl.appendChild(a);
+        });
+      }
+
+      const addBtn = document.createElement('button');
+      addBtn.className = 'add-btn';
+      addBtn.innerHTML = '+ Lägg till';
+      addBtn.addEventListener('click', () => openModal(item));
+
+      row.appendChild(nameEl);
+      row.appendChild(chipsEl);
+      row.appendChild(addBtn);
+      rowsEl.appendChild(row);
+    });
+  });
+
+  // Statistik
+  document.getElementById('stats-bar').innerHTML = `
+    <div class="stat">📄 <strong>${totalPages}</strong> tekniksidor totalt</div>
+    <div class="stat">✅ <strong>${pagesWithCl}</strong> har checklista</div>
+    <div class="stat">⬜ <strong>${totalPages - pagesWithCl}</strong> saknar checklista</div>
+  `;
+}
+
+// --- Modal ---
+let currentPage = null;
+
+function openModal(item) {
+  currentPage = item;
+  document.getElementById('modal-title').textContent = 'Lägg till – ' + item.name;
+  document.getElementById('modal-pwd').value = '';
+  document.getElementById('modal-cl-title').value = '';
+  document.getElementById('modal-url').value = '';
+  document.getElementById('modal-name').value = '';
+  document.getElementById('modal-msg').style.display = 'none';
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modal-pwd').focus();
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  currentPage = null;
+}
+
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
+
+document.getElementById('modal-save').addEventListener('click', async () => {
+  const pwd   = document.getElementById('modal-pwd').value.trim();
+  const title = document.getElementById('modal-cl-title').value.trim();
+  const url   = document.getElementById('modal-url').value.trim();
+  const name  = document.getElementById('modal-name').value.trim();
+  const msgEl = document.getElementById('modal-msg');
+
+  function showMsg(txt, ok) {
+    msgEl.textContent = txt;
+    msgEl.className = 'modal-msg ' + (ok ? 'ok' : 'err');
+    msgEl.style.display = 'block';
+  }
+
+  if (!pwd || !title || !url) { showMsg('Fyll i lösenord, titel och länk.', false); return; }
+  if (!checkPwd(pwd)) { showMsg('Fel lösenord!', false); return; }
+
+  const token = decodeToken(TOKEN_ENC, pwd);
+  const btn = document.getElementById('modal-save');
+  btn.disabled = true; btn.textContent = 'Sparar…';
+
+  try {
+    const id   = Date.now();
+    const meta = { id, title, url, addedBy: name || 'Okänd', date: new Date().toISOString(), page: currentPage.file, group: currentPage.group || '' };
+    await ghPut(FOLDER + '/meta_' + id + '.json', JSON.stringify(meta, null, 2), 'Lägg till checklista: ' + title, token);
+    showMsg('✅ Sparad! Sidan uppdateras om ett ögonblick…', true);
+    setTimeout(() => { closeModal(); init(); }, 2000);
+  } catch(e) {
+    showMsg('Fel: ' + e.message, false);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Spara';
+  }
+});
+
+// --- Init ---
+async function init() {
+  document.getElementById('overview-container').innerHTML = '<div class="loading-msg">Hämtar checklistor…</div>';
+  const all = await fetchAllChecklists();
+  render(all);
+}
+
+// --- Lösenordsskärm ---
+function showMain() {
+  document.getElementById('pwd-screen').style.display = 'none';
+  document.getElementById('main-content').style.display = 'block';
+  init();
+}
+
+document.getElementById('pwd-login-btn').addEventListener('click', () => {
+  const pwd = document.getElementById('pwd-input').value.trim();
+  if (checkPwd(pwd)) {
+    sessionStorage.setItem('cl_auth', '1');
+    showMain();
+  } else {
+    document.getElementById('pwd-err').style.display = 'block';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+});
+
+document.getElementById('pwd-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pwd-login-btn').click();
+});
+
+// Kolla om redan inloggad denna session
+if (sessionStorage.getItem('cl_auth') === '1') {
+  showMain();
+}
+
+</script>
+</body>
+</html>
