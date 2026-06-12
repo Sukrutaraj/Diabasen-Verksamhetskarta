@@ -132,15 +132,20 @@
         <details class="cl-add-section">
           <summary class="cl-add-toggle">+ Lägg till checklista</summary>
           <div class="cl-add-form">
-            <label class="cl-label">Lösenord</label>
-            <input type="password" class="cl-input cl-pwd" placeholder="Ange lösenord" />
-            <label class="cl-label">Titel</label>
-            <input type="text" class="cl-input cl-title" placeholder="T.ex. Starta maskinen" />
-            <label class="cl-label">Länk till checklistan</label>
-            <input type="url" class="cl-input cl-url" placeholder="https://sukrutaraj.github.io/digital-checklist-maker/…" />
-            <label class="cl-label">Ditt namn</label>
-            <input type="text" class="cl-input cl-name" placeholder="Förnamn" />
-            <button class="cl-btn cl-save-btn">Spara checklista</button>
+            <div class="cl-pwd-section">
+              <label class="cl-label">Lösenord</label>
+              <input type="password" class="cl-input cl-pwd" placeholder="Ange lösenord" />
+              <button class="cl-btn cl-unlock-btn">Lås upp</button>
+            </div>
+            <div class="cl-fields" style="display:none">
+              <label class="cl-label">Titel</label>
+              <input type="text" class="cl-input cl-title" placeholder="T.ex. Starta maskinen" />
+              <label class="cl-label">Länk till checklistan</label>
+              <input type="url" class="cl-input cl-url" placeholder="https://sukrutaraj.github.io/digital-checklist-maker/…" />
+              <label class="cl-label">Ditt namn</label>
+              <input type="text" class="cl-input cl-name" placeholder="Förnamn" />
+              <button class="cl-btn cl-save-btn">Spara checklista</button>
+            </div>
             <div class="cl-msg" style="display:none"></div>
           </div>
         </details>
@@ -154,6 +159,21 @@
     const titleInput = container.querySelector('.cl-title');
     const urlInput   = container.querySelector('.cl-url');
     const nameInput  = container.querySelector('.cl-name');
+
+    // Lås upp-knapp
+    const unlockBtn  = container.querySelector('.cl-unlock-btn');
+    const pwdSection = container.querySelector('.cl-pwd-section');
+    const fieldsEl   = container.querySelector('.cl-fields');
+
+    unlockBtn.addEventListener('click', () => {
+      const pwd = pwdInput.value.trim();
+      if (!pwd) { showMsg('Ange lösenord.', false); return; }
+      if (!checkPwd(pwd)) { showMsg('Fel lösenord!', false); pwdInput.value = ''; return; }
+      pwdSection.style.display = 'none';
+      fieldsEl.style.display = 'block';
+      msgEl.style.display = 'none';
+    });
+    pwdInput.addEventListener('keydown', e => { if (e.key === 'Enter') unlockBtn.click(); });
 
     function showMsg(text, ok) {
       msgEl.textContent = text;
@@ -204,8 +224,7 @@
       const title = titleInput.value.trim();
       const url   = urlInput.value.trim();
       const name  = nameInput.value.trim();
-      if (!pwd || !title || !url) { showMsg('Fyll i lösenord, titel och länk.', false); return; }
-      if (!checkPwd(pwd)) { showMsg('Fel lösenord!', false); return; }
+      if (!title || !url) { showMsg('Fyll i titel och länk.', false); return; }
       const token = decodeToken(TOKEN_ENC, pwd);
       savBtn.disabled = true;
       savBtn.textContent = 'Sparar…';
@@ -213,6 +232,10 @@
         await saveChecklist(title, url, name || 'Okänd', pageId, token);
         showMsg('✅ Sparad!', true);
         titleInput.value = urlInput.value = nameInput.value = '';
+        // Återställ lösenordsvy
+        pwdInput.value = '';
+        pwdSection.style.display = 'block';
+        fieldsEl.style.display = 'none';
         loadList();
       } catch(e) {
         showMsg('Fel: ' + e.message, false);
