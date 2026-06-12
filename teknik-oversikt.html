@@ -785,7 +785,7 @@ function renderOvrigt(items, grid) {
   items.forEach(item => {
     const a = document.createElement('a');
     a.className = 'ovrigt-item';
-    a.href = item.file + '.html';
+    a.href = 'tech/' + item.file + '.html';
     a.target = '_blank';
     a.innerHTML = `
       <div class="ovrigt-icon">${item.emoji}</div>
