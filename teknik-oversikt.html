@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tekniköversikt – Nilis</title>
+  <title>Tekniköversikt – Diabasen</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
@@ -268,6 +268,32 @@
     .tc-success-msg { font-size: 1.1rem; font-weight: 700; color: #1b6b2f; }
     .tc-success-sub { font-size: 0.88rem; color: #666; margin-bottom: 8px; }
 
+
+    /* Lägg till teknik-knapp */
+    .add-tech-bar {
+      display: flex; justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+    .add-tech-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #2c5f8a; color: #fff;
+      border: none; border-radius: 24px;
+      padding: 10px 20px; font-size: 0.92rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: background 0.15s;
+    }
+    .add-tech-btn:hover { background: #1e4a6e; }
+
+    /* Dropdown */
+    .tc-select {
+      padding: 9px 12px; border: 1.5px solid #d0d7de;
+      border-radius: 8px; font-size: 0.92rem;
+      font-family: inherit; background: #fafbfc;
+      width: 100%; box-sizing: border-box;
+      appearance: none; cursor: pointer;
+    }
+    .tc-select:focus { outline: none; border-color: #2c5f8a; background: #fff; }
+
     @media (max-width: 520px) {
       .tech-row { flex-direction: column; align-items: flex-start; }
       .tech-name { min-width: unset; }
@@ -291,10 +317,76 @@
 <div class="main-content" id="main-content">
   <div class="page-container">
     <div class="back-link"><a href="index.html">← Tillbaka till kartan</a></div>
-    <h1>📋 Tekniköversikt – Nilis</h1>
+    <h1>📋 Tekniköversikt – Diabasen</h1>
     <p class="subtitle">Alla teknikchecklistor samlade. Gröna märken = checklista finns. Klicka "+ Lägg till" för att lägga till fler.</p>
+    <div class="add-tech-bar"><button class="add-tech-btn" id="global-add-tech-btn">➕ Lägg till ny teknik</button></div>
     <div class="stats-bar" id="stats-bar"><div class="stat">Laddar…</div></div>
     <div id="overview-container"><div class="loading-msg">Hämtar checklistor…</div></div>
+
+<!-- Global Lägg till teknik modal -->
+<div class="tc-overlay" id="global-tc-overlay">
+  <div class="tc-modal">
+    <div class="tc-modal-header">
+      <span class="tc-modal-title">➕ Lägg till ny teknik</span>
+      <button class="tc-close" id="global-tc-close">✕</button>
+    </div>
+
+    <div class="tc-step" id="global-tc-step1">
+      <label class="tc-label">Lösenord</label>
+      <input type="password" class="tc-input" id="global-tc-pwd" placeholder="Ange lösenord" />
+      <button class="tc-btn" id="global-tc-next">Fortsätt →</button>
+      <div class="tc-err" id="global-tc-err1" style="display:none"></div>
+    </div>
+
+    <div class="tc-step" id="global-tc-step2" style="display:none">
+
+      <label class="tc-label">Välj grupp</label>
+      <select class="tc-select" id="global-tc-group">
+        <option value="">— Välj grupp —</option>
+        <option value="grupp1|Grupp 1|groups/grupp1-teknik.html">Grupp 1</option>
+        <option value="grupp2|Grupp 2|groups/grupp2-teknik.html">Grupp 2</option>
+        <option value="grupp3|Grupp 3|groups/grupp3-teknik.html">Grupp 3</option>
+        <option value="grupp45|Grupp 4 & 5|groups/grupp45-teknik.html">Grupp 4 & 5</option>
+        <option value="matsalen|Matsalen|groups/matsalen-teknik.html">Matsalen</option>
+        <option value="slangbellan|Teater Slångbellan|groups/slangbellan-teknik.html">Teater Slångbellan</option>
+        <option value="studion|Studion|groups/studion-teknik.html">Studion</option>
+        <option value="ovrigt|Övrig teknik|">Övrig teknik (ingen gruppsida)</option>
+      </select>
+
+      <label class="tc-label">Välj emoji</label>
+      <div class="tc-emoji-grid" id="global-tc-emoji-grid"></div>
+      <div class="tc-selected-emoji">Vald: <span id="global-tc-emoji-preview">–</span></div>
+
+      <label class="tc-label">Namn på tekniken</label>
+      <input type="text" class="tc-input" id="global-tc-name" placeholder="T.ex. VR-headset" />
+
+      <label class="tc-label">Beskrivning</label>
+      <textarea class="tc-input" id="global-tc-intro1" rows="2" placeholder="Beskriv tekniken och hur den används..."></textarea>
+
+      <label class="tc-label">Beskrivning 2 (valfritt)</label>
+      <textarea class="tc-input" id="global-tc-intro2" rows="2"></textarea>
+
+      <label class="tc-label">Hur ni använder den (en rad per punkt)</label>
+      <textarea class="tc-input" id="global-tc-usage" rows="4" placeholder="Träna koordination&#10;Arbeta kreativt&#10;Samarbeta"></textarea>
+
+      <button class="tc-btn" id="global-tc-save">✅ Skapa tekniksida</button>
+      <div class="tc-err" id="global-tc-err2" style="display:none"></div>
+      <div class="tc-progress" id="global-tc-progress" style="display:none">
+        <div class="tc-progress-bar"><div class="tc-progress-fill" id="global-tc-fill"></div></div>
+        <div class="tc-progress-msg" id="global-tc-msg">Arbetar…</div>
+      </div>
+    </div>
+
+    <div class="tc-step" id="global-tc-step3" style="display:none">
+      <div class="tc-success">
+        <div class="tc-success-icon">✅</div>
+        <div class="tc-success-msg">Tekniksidan är skapad!</div>
+        <div class="tc-success-sub">Syns inom 1–2 minuter på GitHub Pages.</div>
+        <button class="tc-btn" id="global-tc-done">Stäng</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <div id="ovrigt-container" class="ovrigt-section">
     <h2 class="ovrigt-title">🔧 Övrig teknik</h2>
@@ -342,7 +434,7 @@
 </div>
 
 <script>
-const REPO      = 'sukrutaraj/Verksamhetskarta-Nilis';
+const REPO      = 'sukrutaraj/Diabasen-Verksamhetskarta';
 const BRANCH    = 'main';
 const FOLDER    = 'checklists';
 const BASE      = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
@@ -351,27 +443,40 @@ const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a33630377026
 const PWD_HASH  = '79b497e2';
 
 const TECH_PAGES = [
-  { group: 'Fönster', items: [
-    { name: 'Datorer',            file: 'fonster-datorer' },
-    { name: 'Fliptavla',          file: 'fonster-fliptavla' },
-    { name: 'iPad',               file: 'fonster-ipad' },
+  { group: 'Grupp 1', items: [
+    { name: '3D-skrivare',        file: 'grupp1-3d' },
+    { name: 'Datorer',            file: 'grupp1-datorer' },
+    { name: 'iPad & Mobil',       file: 'grupp1-mobil' },
+    { name: 'Musik & Inspelning', file: 'grupp1-musik' },
   ]},
-  { group: 'Örn', items: [
-    { name: 'Fliptavla',          file: 'orn-fliptavla' },
-    { name: 'Hörlurar',           file: 'orn-horlurar' },
-    { name: 'Mobiltelefoner',     file: 'orn-mobiltelefoner' },
-    { name: 'PlayStation',        file: 'orn-playstation' },
+  { group: 'Grupp 2', items: [
+    { name: 'Datorer',            file: 'grupp2-datorer' },
+    { name: 'Fliptavla',          file: 'grupp2-fliptavla' },
+    { name: 'iPad & Telefon',     file: 'grupp2-ipad' },
+    { name: 'Tidshjälpmedel',     file: 'grupp2-tid' },
+    { name: 'Touch',              file: 'grupp2-touch' },
   ]},
-  { group: 'Skrylle', items: [
-    { name: 'Fliptavla',          file: 'skrylle-fliptavla' },
-    { name: 'iPad',               file: 'skrylle-ipad' },
-    { name: 'Mobil',              file: 'skrylle-mobil' },
+  { group: 'Grupp 3', items: [
+    { name: 'Fliptavla',          file: 'grupp3-fliptavla' },
+    { name: 'iPad',               file: 'grupp3-ipad' },
   ]},
-  { group: 'Transport', items: [
-    { name: '3D-skrivare',        file: 'transport-3d' },
-    { name: 'Datorer',            file: 'transport-datorer' },
-    { name: 'Fliptavla',          file: 'transport-fliptavla' },
-    { name: 'iPad',               file: 'transport-ipad' },
+  { group: 'Grupp 4 & 5', items: [
+    { name: 'AI',                 file: 'grupp45-ai' },
+    { name: 'Datorer',            file: 'grupp45-datorer' },
+    { name: 'iPad',               file: 'grupp45-ipad' },
+    { name: 'Speldatorer',        file: 'grupp45-speldatorer' },
+  ]},
+  { group: 'Matsalen', items: [
+    { name: 'Datorer',            file: 'matsalen-datorer' },
+    { name: 'Fliptavla',          file: 'matsalen-flip' },
+  ]},
+  { group: 'Slångbellan', items: [
+    { name: '3D-skrivare',        file: 'slangbellan-3d' },
+    { name: 'Fliptavla',          file: 'slangbellan-fliptavla' },
+    { name: 'Info',               file: 'slangbellan-info' },
+    { name: 'Makey Makey',        file: 'slangbellan-makeymakey' },
+    { name: 'Mobil',              file: 'slangbellan-mobil' },
+    { name: 'Planering',          file: 'slangbellan-planering' },
   ]},
 ];
 
@@ -653,6 +758,214 @@ async function init() {
   const all = await fetchAllChecklists();
   render(all);
 }
+
+// ============================================================
+// GLOBAL LÄGG TILL TEKNIK
+// ============================================================
+const EMOJI_LIST_GLOBAL = [
+  '💻','🖥️','🖨️','⌨️','🖱️','📱','📲','☎️','📺','📻',
+  '🎙️','🎚️','🎛️','📡','🔋','🔌','💡','🎵','🎶','🎸',
+  '🎹','🎺','🎻','🥁','🎤','🎧','🎮','🕹️','🎲','🧩',
+  '🎨','✏️','📐','🔬','🔭','⚗️','🧪','🤖','⚙️','🔧',
+  '🔩','🛠️','💾','💿','📀','📷','📸','📹','🚗','🚌',
+  '🚲','✈️','🚀','🌱','🌍','⭐','🌈','🔥','💧','🌊',
+  '📚','📖','📝','📌','📊','📈','❤️','👍','🙌','💪',
+  '🎭','🎪','🏋️','⚽','🏀','🎾','🏊','🧘','🤸','🧰',
+];
+
+// Fill emoji grid
+const globalEmojiGrid = document.getElementById('global-tc-emoji-grid');
+EMOJI_LIST_GLOBAL.forEach(e => {
+  const btn = document.createElement('button');
+  btn.className = 'tc-emoji-btn';
+  btn.dataset.emoji = e;
+  btn.textContent = e;
+  btn.addEventListener('click', () => {
+    globalEmojiGrid.querySelectorAll('.tc-emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    globalSelEmoji = e;
+    document.getElementById('global-tc-emoji-preview').textContent = e;
+  });
+  globalEmojiGrid.appendChild(btn);
+});
+
+let globalSelEmoji = '';
+let globalToken = '';
+
+function openGlobalTcModal() {
+  globalSelEmoji = '';
+  globalToken = '';
+  document.getElementById('global-tc-pwd').value = '';
+  document.getElementById('global-tc-group').value = '';
+  document.getElementById('global-tc-name').value = '';
+  document.getElementById('global-tc-intro1').value = '';
+  document.getElementById('global-tc-intro2').value = '';
+  document.getElementById('global-tc-usage').value = '';
+  document.getElementById('global-tc-err1').style.display = 'none';
+  document.getElementById('global-tc-err2').style.display = 'none';
+  document.getElementById('global-tc-progress').style.display = 'none';
+  document.getElementById('global-tc-step1').style.display = 'block';
+  document.getElementById('global-tc-step2').style.display = 'none';
+  document.getElementById('global-tc-step3').style.display = 'none';
+  globalEmojiGrid.querySelectorAll('.tc-emoji-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('global-tc-emoji-preview').textContent = '–';
+  document.getElementById('global-tc-overlay').classList.add('open');
+  document.getElementById('global-tc-pwd').focus();
+}
+
+document.getElementById('global-add-tech-btn').addEventListener('click', openGlobalTcModal);
+document.getElementById('global-tc-close').addEventListener('click', () => document.getElementById('global-tc-overlay').classList.remove('open'));
+document.getElementById('global-tc-overlay').addEventListener('click', e => { if (e.target === document.getElementById('global-tc-overlay')) document.getElementById('global-tc-overlay').classList.remove('open'); });
+
+// Steg 1 – lösenord
+document.getElementById('global-tc-next').addEventListener('click', () => {
+  const pwd = document.getElementById('global-tc-pwd').value.trim();
+  const err = document.getElementById('global-tc-err1');
+  if (!pwd) { err.textContent = 'Ange lösenord.'; err.style.display = 'block'; return; }
+  if (!checkPwd(pwd)) { err.textContent = 'Fel lösenord!'; err.style.display = 'block'; return; }
+  globalToken = decodeToken(TOKEN_ENC, pwd);
+  document.getElementById('global-tc-step1').style.display = 'none';
+  document.getElementById('global-tc-step2').style.display = 'block';
+});
+document.getElementById('global-tc-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('global-tc-next').click(); });
+
+// Steg 2 – spara
+document.getElementById('global-tc-save').addEventListener('click', async () => {
+  const err = document.getElementById('global-tc-err2');
+  const groupVal  = document.getElementById('global-tc-group').value;
+  const techName  = document.getElementById('global-tc-name').value.trim();
+  const intro1    = document.getElementById('global-tc-intro1').value.trim();
+  const intro2    = document.getElementById('global-tc-intro2').value.trim();
+  const usageItems = document.getElementById('global-tc-usage').value.trim().split('\n').filter(u => u.trim());
+
+  if (!groupVal)            { err.textContent = 'Välj en grupp.'; err.style.display = 'block'; return; }
+  if (!globalSelEmoji)      { err.textContent = 'Välj en emoji.'; err.style.display = 'block'; return; }
+  if (!techName)            { err.textContent = 'Ange ett namn.'; err.style.display = 'block'; return; }
+  if (!intro1)              { err.textContent = 'Ange en beskrivning.'; err.style.display = 'block'; return; }
+  if (!usageItems.length)   { err.textContent = 'Ange minst ett användningsområde.'; err.style.display = 'block'; return; }
+
+  err.style.display = 'none';
+  const saveBtn = document.getElementById('global-tc-save');
+  saveBtn.disabled = true;
+  const progress = document.getElementById('global-tc-progress');
+  const fill = document.getElementById('global-tc-fill');
+  const msg  = document.getElementById('global-tc-msg');
+  progress.style.display = 'block';
+
+  const setP = (p, m) => { fill.style.width = p + '%'; msg.textContent = m; };
+
+  const [groupId, groupName, techFile] = groupVal.split('|');
+  const isOvrigt = groupId === 'ovrigt';
+  const fileSlug = (isOvrigt ? 'ovrigt-' : groupId + '-') + slugifyOv(techName);
+  const backUrl  = isOvrigt ? 'teknik-oversikt.html' : '../groups/' + groupId + '-teknik.html';
+  const cssPath  = isOvrigt ? 'css/style.css' : '../css/style.css';
+  const cssCl    = isOvrigt ? 'css/checklist.css' : '../css/checklist.css';
+  const jsRead   = isOvrigt ? 'js/read.js' : '../js/read.js';
+  const jsCl     = isOvrigt ? 'js/checklist.js' : '../js/checklist.js';
+  const techPath = isOvrigt ? fileSlug + '.html' : 'tech/' + fileSlug + '.html';
+
+  try {
+    // 1. Skapa HTML-sidan
+    setP(20, 'Skapar tekniksida…');
+    const usageList = usageItems.map(u => `                    <li>${escHtml(u.trim())}</li>`).join('\n');
+    const intro2Block = intro2 ? `\n            <p class="intro-text">\n                ${escHtml(intro2)}\n            </p>` : '';
+    const pageHtml = `<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escHtml(techName)}</title>
+    <link rel="stylesheet" href="${cssPath}">
+    <link rel="stylesheet" href="${cssCl}">
+</head>
+<body>
+<div class="page-container">
+    <div class="back-link">
+        <a href="${backUrl}">← Tillbaka till Teknik i rummet</a>
+    </div>
+    <div class="read-top">
+        <button class="read-button stop-button" onclick="toggleRead()">🔊 Svenska</button>
+        <button class="read-button read-btn-en" onclick="readEnglish()">🔊 English</button>
+        <button class="read-button read-btn-ar" onclick="readArabic()">🔊 العربية</button>
+        <button class="read-button read-btn-so" onclick="readSomali()">🔊 Somali</button>
+    </div>
+    <h1 class="page-title">${escHtml(techName.toUpperCase())}</h1>
+    <div class="readable-content">
+        <div class="content-card">
+            <p class="intro-text">
+                ${escHtml(intro1)}
+            </p>${intro2Block}
+            <h2>Hur vi använder ${escHtml(techName)}</h2>
+            <div class="tech-description">
+                <ul>
+${usageList}
+                </ul>
+            </div>
+            <h2>Kom igång</h2>
+            <p>Här finns checklistor för hur man använder ${escHtml(techName)} på ett tryggt sätt.</p>
+            <div class="cl-widget"></div>
+        </div>
+    </div>
+</div>
+<script src="${jsRead}"><\/script>
+<script src="${jsCl}"><\/script>
+</body>
+</html>`;
+
+    const existingPage = await ghGetFileOv(techPath, globalToken);
+    await ghPutOv(techPath, pageHtml, existingPage ? existingPage.sha : null, 'Ny teknik: ' + techName, globalToken);
+
+    // 2. Uppdatera gruppsidan (om inte övrig)
+    if (!isOvrigt && techFile) {
+      setP(55, 'Uppdaterar tekniklistan…');
+      const existingGroup = await ghGetFileOv(techFile, globalToken);
+      if (existingGroup) {
+        let currentHtml = decodeURIComponent(escape(atob(existingGroup.content.replace(/\n/g, ''))));
+        // Lägg till ny ikon i tech-grid
+        const newItem = `
+            <a href="../tech/${fileSlug}.html" class="tech-item">
+                <div class="tech-icon">${globalSelEmoji}</div>
+                <div class="tech-label">${escHtml(techName)}</div>
+            </a>`;
+        const marker = '\n        <!-- Avdelare -->';
+        const gridEnd = currentHtml.lastIndexOf('</div>', currentHtml.indexOf(marker));
+        if (gridEnd !== -1) {
+          currentHtml = currentHtml.slice(0, gridEnd) + newItem + '\n\n        </div>' + currentHtml.slice(gridEnd + 6);
+        }
+        await ghPutOv(techFile, currentHtml, existingGroup.sha, 'Lägg till ' + techName + ' i tekniklistan', globalToken);
+      }
+    }
+
+    // 3. Spara metadata
+    setP(80, 'Sparar metadata…');
+    const metaPath = 'tech-meta/meta_' + fileSlug + '.json';
+    const existingMeta = await ghGetFileOv(metaPath, globalToken);
+    const meta = {
+      id: Date.now(), techName, emoji: globalSelEmoji,
+      groupId, groupName, file: fileSlug,
+      intro1, intro2, usageItems,
+      date: new Date().toISOString()
+    };
+    await ghPutOv(metaPath, JSON.stringify(meta, null, 2), existingMeta ? existingMeta.sha : null, 'Meta: ' + techName, globalToken);
+
+    setP(100, 'Klart!');
+    await new Promise(r => setTimeout(r, 400));
+    document.getElementById('global-tc-step2').style.display = 'none';
+    document.getElementById('global-tc-step3').style.display = 'block';
+
+  } catch(e) {
+    err.textContent = 'Fel: ' + e.message;
+    err.style.display = 'block';
+    progress.style.display = 'none';
+    saveBtn.disabled = false;
+  }
+});
+
+document.getElementById('global-tc-done').addEventListener('click', () => {
+  document.getElementById('global-tc-overlay').classList.remove('open');
+  init();
+  loadOvrigt();
+});
 
 // ============================================================
 // ÖVRIG TEKNIK
