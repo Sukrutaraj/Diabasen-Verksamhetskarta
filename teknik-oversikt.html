@@ -857,12 +857,12 @@ document.getElementById('global-tc-save').addEventListener('click', async () => 
   const [groupId, groupName, techFile] = groupVal.split('|');
   const isOvrigt = groupId === 'ovrigt';
   const fileSlug = (isOvrigt ? 'ovrigt-' : groupId + '-') + slugifyOv(techName);
-  const backUrl  = isOvrigt ? 'teknik-oversikt.html' : '../groups/' + groupId + '-teknik.html';
-  const cssPath  = isOvrigt ? 'css/style.css' : '../css/style.css';
-  const cssCl    = isOvrigt ? 'css/checklist.css' : '../css/checklist.css';
-  const jsRead   = isOvrigt ? 'js/read.js' : '../js/read.js';
-  const jsCl     = isOvrigt ? 'js/checklist.js' : '../js/checklist.js';
-  const techPath = isOvrigt ? fileSlug + '.html' : 'tech/' + fileSlug + '.html';
+  const backUrl  = isOvrigt ? '../teknik-oversikt.html' : '../groups/' + groupId + '-teknik.html';
+  const cssPath  = '../css/style.css';
+  const cssCl    = '../css/checklist.css';
+  const jsRead   = '../js/read.js';
+  const jsCl     = '../js/checklist.js';
+  const techPath = 'tech/' + fileSlug + '.html';
 
   try {
     // 1. Skapa HTML-sidan
