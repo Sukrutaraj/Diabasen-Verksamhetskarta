@@ -168,6 +168,106 @@
     .divider { border: none; border-top: 1px solid #eee; margin: 12px 0; }
     .loading-msg { color: #888; font-size: 0.9rem; padding: 8px 14px; }
 
+
+    /* Övrig teknik */
+    .ovrigt-section { margin-top: 32px; }
+    .ovrigt-title {
+      font-size: 1rem; font-weight: 700; color: #fff;
+      background: #6c7a89; padding: 8px 14px;
+      border-radius: 8px 8px 0 0; margin: 0;
+    }
+    .ovrigt-grid {
+      border: 2px solid #d0d9e4; border-top: none;
+      border-radius: 0 0 8px 8px;
+      background: #fff; padding: 16px;
+      display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-start;
+    }
+    .ovrigt-item {
+      display: flex; flex-direction: column; align-items: center;
+      text-decoration: none; color: #2c3e50;
+      width: 90px; text-align: center; position: relative;
+    }
+    .ovrigt-icon {
+      font-size: 2rem;
+      background: #f4f6f9; border-radius: 50%;
+      width: 56px; height: 56px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 6px;
+      border: 2px solid #e0e6ed;
+      transition: border-color 0.15s;
+    }
+    .ovrigt-item:hover .ovrigt-icon { border-color: #2c5f8a; }
+    .ovrigt-label { font-size: 0.78rem; font-weight: 600; line-height: 1.2; }
+    .ovrigt-del-btn, .ovrigt-edit-btn {
+      position: absolute; top: 0;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid #ddd; border-radius: 5px;
+      font-size: 0.72rem; width: 22px; height: 22px;
+      cursor: pointer; display: none;
+      align-items: center; justify-content: center; padding: 0;
+    }
+    .ovrigt-edit-btn { right: 22px; }
+    .ovrigt-del-btn  { right: 0; }
+    .ovrigt-item:hover .ovrigt-del-btn,
+    .ovrigt-item:hover .ovrigt-edit-btn { display: flex; }
+    .ovrigt-del-btn:hover  { background: #fde8e8; border-color: #e07070; }
+    .ovrigt-edit-btn:hover { background: #e8f0f8; border-color: #2c5f8a; }
+    .ovrigt-add-btn {
+      display: flex; flex-direction: column; align-items: center;
+      background: none; border: 2px dashed #aac4de;
+      border-radius: 10px; width: 90px; height: 80px;
+      cursor: pointer; color: #2c5f8a; font-size: 0.8rem;
+      font-weight: 700; font-family: inherit;
+      justify-content: center; gap: 4px;
+      transition: background 0.15s, border-color 0.15s;
+      opacity: 0.7;
+    }
+    .ovrigt-add-btn:hover { background: #e8f0f8; border-color: #2c5f8a; opacity: 1; }
+    .ovrigt-add-icon { font-size: 1.4rem; }
+    .ovrigt-empty { color: #aaa; font-size: 0.85rem; font-style: italic; padding: 4px 0; }
+
+    /* Tech-creator modal (inlined) */
+    .tc-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 200;
+      align-items: center; justify-content: center; padding: 16px;
+    }
+    .tc-overlay.open { display: flex; }
+    .tc-modal {
+      background: #fff; border-radius: 14px; width: 100%;
+      max-width: 480px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+    .tc-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 12px; border-bottom: 1px solid #eee;
+      position: sticky; top: 0; background: #fff; z-index: 1;
+    }
+    .tc-modal-title { font-size: 1rem; font-weight: 700; color: #2c3e50; }
+    .tc-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #888; padding: 2px 6px; border-radius: 4px; }
+    .tc-close:hover { background: #f0f0f0; }
+    .tc-step { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .tc-label { font-size: 0.83rem; font-weight: 700; color: #555; margin-top: 6px; }
+    .tc-input { padding: 9px 12px; border: 1.5px solid #d0d7de; border-radius: 8px; font-size: 0.92rem; font-family: inherit; background: #fafbfc; width: 100%; box-sizing: border-box; resize: vertical; }
+    .tc-input:focus { outline: none; border-color: #2c5f8a; background: #fff; }
+    .tc-emoji-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0; max-height: 180px; overflow-y: auto; padding: 4px; border: 1px solid #e8e8e8; border-radius: 8px; background: #fafbfc; }
+    .tc-emoji-btn { font-size: 1.3rem; width: 38px; height: 38px; border: 2px solid transparent; border-radius: 7px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tc-emoji-btn:hover { background: #e8f0f8; border-color: #aac4de; }
+    .tc-emoji-btn.selected { border-color: #2c5f8a; background: #ddeaf8; }
+    .tc-selected-emoji { font-size: 0.85rem; color: #555; margin: 2px 0 4px; }
+    .tc-btn { margin-top: 10px; padding: 11px 20px; background: #2c5f8a; color: #fff; border: none; border-radius: 9px; font-size: 0.95rem; font-weight: 700; cursor: pointer; font-family: inherit; align-self: flex-start; }
+    .tc-btn:hover:not(:disabled) { background: #1e4a6e; }
+    .tc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .tc-err { font-size: 0.86rem; color: #a12020; background: #fde8e8; border: 1px solid #f5b8b8; border-radius: 7px; padding: 7px 11px; margin-top: 4px; }
+    .tc-progress { margin-top: 12px; }
+    .tc-progress-bar { background: #e8edf2; border-radius: 20px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .tc-progress-fill { height: 100%; background: #2c5f8a; border-radius: 20px; width: 0%; transition: width 0.4s ease; }
+    .tc-progress-msg { font-size: 0.85rem; color: #555; }
+    .tc-success { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 0 10px; gap: 8px; }
+    .tc-success-icon { font-size: 2.5rem; }
+    .tc-success-msg { font-size: 1.1rem; font-weight: 700; color: #1b6b2f; }
+    .tc-success-sub { font-size: 0.88rem; color: #666; margin-bottom: 8px; }
+
     @media (max-width: 520px) {
       .tech-row { flex-direction: column; align-items: flex-start; }
       .tech-name { min-width: unset; }
@@ -195,6 +295,13 @@
     <p class="subtitle">Alla teknikchecklistor samlade. Gröna märken = checklista finns. Klicka "+ Lägg till" för att lägga till fler.</p>
     <div class="stats-bar" id="stats-bar"><div class="stat">Laddar…</div></div>
     <div id="overview-container"><div class="loading-msg">Hämtar checklistor…</div></div>
+
+  <div id="ovrigt-container" class="ovrigt-section">
+    <h2 class="ovrigt-title">🔧 Övrig teknik</h2>
+    <div class="ovrigt-grid" id="ovrigt-grid">
+      <div class="ovrigt-empty">Laddar…</div>
+    </div>
+  </div>
   </div>
 </div>
 
@@ -560,10 +667,298 @@ async function init() {
   render(all);
 }
 
+// ============================================================
+// ÖVRIG TEKNIK
+// ============================================================
+const EMOJI_LIST_OV = [
+  '💻','🖥️','🖨️','⌨️','🖱️','📱','📲','☎️','📺','📻',
+  '🎙️','🎚️','🎛️','📡','🔋','🔌','💡','🎵','🎶','🎸',
+  '🎹','🎺','🎻','🥁','🎤','🎧','🎮','🕹️','🎲','🧩',
+  '🎨','✏️','📐','🔬','🔭','⚗️','🧪','🤖','⚙️','🔧',
+  '🔩','🛠️','💾','💿','📀','📷','📸','📹','🚗','🚌',
+  '🚲','✈️','🚀','🌱','🌍','⭐','🌈','🔥','💧','🌊',
+  '📚','📖','📝','📌','📊','📈','❤️','👍','🙌','💪',
+];
+
+async function ghGetFileOv(path, token) {
+  try {
+    const headers = { 'Accept': 'application/vnd.github.v3+json' };
+    if (token) headers['Authorization'] = 'token ' + token;
+    const r = await fetch(API + path + '?ref=' + BRANCH, { headers });
+    if (!r.ok) return null;
+    return r.json();
+  } catch(e) { return null; }
+}
+
+async function ghPutOv(path, content, sha, message, token) {
+  const body = { message, content: btoa(unescape(encodeURIComponent(content))), branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(API + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json().catch(() => ({})); throw new Error(e.message || r.status); }
+  return r.json();
+}
+
+async function ghDeleteOv(path, sha, message, token) {
+  const r = await fetch(API + path, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify({ message, sha, branch: BRANCH })
+  });
+  if (!r.ok) throw new Error('Borttagning: ' + r.status);
+}
+
+function slugifyOv(str) {
+  return str.toLowerCase()
+    .replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+function generateOvTechPage(techName, emoji, intro1, intro2, usageItems) {
+  const usageList = usageItems.filter(u=>u.trim()).map(u=>`                    <li>${escHtml(u.trim())}</li>`).join('\n');
+  return `<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escHtml(techName)}</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/checklist.css">
+</head>
+<body>
+<div class="page-container">
+    <div class="back-link"><a href="teknik-oversikt.html">← Tillbaka till Tekniköversikt</a></div>
+    <div class="read-top">
+        <button class="read-button stop-button" onclick="toggleRead()">🔊 Svenska</button>
+        <button class="read-button read-btn-en" onclick="readEnglish()">🔊 English</button>
+        <button class="read-button read-btn-ar" onclick="readArabic()">🔊 العربية</button>
+        <button class="read-button read-btn-so" onclick="readSomali()">🔊 Somali</button>
+    </div>
+    <h1 class="page-title">${escHtml(techName.toUpperCase())}</h1>
+    <div class="readable-content">
+        <div class="content-card">
+            <p class="intro-text">${escHtml(intro1)}</p>
+            ${intro2 ? `<p class="intro-text">${escHtml(intro2)}</p>` : ''}
+            <h2>Hur vi använder ${escHtml(techName)}</h2>
+            <div class="tech-description"><ul>\n${usageList}\n            </ul></div>
+            <h2>Kom igång</h2>
+            <p>Här finns checklistor för hur man använder ${escHtml(techName)} på ett tryggt sätt.</p>
+            <div class="cl-widget"></div>
+        </div>
+    </div>
+</div>
+<script src="js/read.js"><\/script>
+<script src="js/checklist.js"><\/script>
+</body>
+</html>`;
+}
+
+async function loadOvrigt() {
+  const grid = document.getElementById('ovrigt-grid');
+  try {
+    const r = await fetch(API + 'tech-meta?ref=' + BRANCH, { headers: { 'Accept': 'application/vnd.github.v3+json' } });
+    if (!r.ok) throw new Error();
+    const files = await r.json();
+    const metaFiles = files.filter(f => f.name.startsWith('meta_') && f.name.endsWith('.json'));
+    const items = [];
+    for (const mf of metaFiles) {
+      try {
+        const resp = await fetch(BASE + 'tech-meta/' + mf.name);
+        if (!resp.ok) continue;
+        const meta = await resp.json();
+        if (meta.groupId === 'ovrigt') items.push({ ...meta, _file: mf.name, _sha: mf.sha });
+      } catch(e) {}
+    }
+    renderOvrigt(items, grid);
+  } catch(e) {
+    grid.innerHTML = '<span class="ovrigt-empty">Kunde inte ladda övrig teknik.</span>';
+  }
+}
+
+function renderOvrigt(items, grid) {
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'ovrigt-item';
+    a.href = item.file + '.html';
+    a.target = '_blank';
+    a.innerHTML = `
+      <div class="ovrigt-icon">${item.emoji}</div>
+      <div class="ovrigt-label">${escHtml(item.techName)}</div>
+      <button class="ovrigt-edit-btn" title="Redigera">✏️</button>
+      <button class="ovrigt-del-btn" title="Ta bort">🗑️</button>
+    `;
+
+    a.querySelector('.ovrigt-edit-btn').addEventListener('click', e => {
+      e.preventDefault();
+      openOvModal(item);
+    });
+    a.querySelector('.ovrigt-del-btn').addEventListener('click', e => {
+      e.preventDefault();
+      if (!confirm('Ta bort "' + item.techName + '"?')) return;
+      const pwd = prompt('Lösenord:');
+      if (!pwd || !checkPwd(pwd)) { alert('Fel lösenord!'); return; }
+      const token = decodeToken(TOKEN_ENC, pwd);
+      a.style.opacity = '0.4';
+      Promise.all([
+        ghGetFileOv('tech/' + item.file + '.html', token).then(f => f ? ghDeleteOv('tech/' + item.file + '.html', f.sha, 'Ta bort: ' + item.techName, token) : null),
+        ghDeleteOv('tech-meta/' + item._file, item._sha, 'Ta bort meta: ' + item.techName, token)
+      ]).then(() => loadOvrigt()).catch(err => { alert('Fel: ' + err.message); a.style.opacity = '1'; });
+    });
+
+    grid.appendChild(a);
+  });
+
+  // Lägg till-knapp
+  const addBtn = document.createElement('button');
+  addBtn.className = 'ovrigt-add-btn';
+  addBtn.innerHTML = '<span class="ovrigt-add-icon">➕</span>Lägg till';
+  addBtn.addEventListener('click', () => openOvModal(null));
+  grid.appendChild(addBtn);
+
+  if (items.length === 0) {
+    const empty = document.createElement('span');
+    empty.className = 'ovrigt-empty';
+    empty.textContent = 'Ingen övrig teknik tillagd än.';
+    grid.insertBefore(empty, addBtn);
+  }
+}
+
+function openOvModal(existingItem) {
+  const isEdit = !!existingItem;
+  const overlay = document.createElement('div');
+  overlay.className = 'tc-overlay';
+  overlay.innerHTML = `
+    <div class="tc-modal">
+      <div class="tc-modal-header">
+        <span class="tc-modal-title">${isEdit ? '✏️ Redigera teknik' : '➕ Lägg till övrig teknik'}</span>
+        <button class="tc-close">✕</button>
+      </div>
+      <div class="tc-step" id="ov-step1">
+        <label class="tc-label">Lösenord</label>
+        <input type="password" class="tc-input ov-pwd" placeholder="Ange lösenord" />
+        <button class="tc-btn ov-next">Fortsätt →</button>
+        <div class="tc-err" style="display:none"></div>
+      </div>
+      <div class="tc-step" id="ov-step2" style="display:none">
+        <label class="tc-label">Välj emoji</label>
+        <div class="tc-emoji-grid">${EMOJI_LIST_OV.map(e=>`<button class="tc-emoji-btn" data-emoji="${e}">${e}</button>`).join('')}</div>
+        <div class="tc-selected-emoji">Vald: <span class="ov-emoji-preview">${isEdit ? existingItem.emoji : '–'}</span></div>
+        <label class="tc-label">Namn</label>
+        <input type="text" class="tc-input ov-name" placeholder="T.ex. Smart-TV" value="${isEdit ? escHtml(existingItem.techName) : ''}" />
+        <label class="tc-label">Beskrivning</label>
+        <textarea class="tc-input ov-intro1" rows="2" placeholder="Beskriv tekniken...">${isEdit ? escHtml(existingItem.intro1||'') : ''}</textarea>
+        <label class="tc-label">Beskrivning 2 (valfritt)</label>
+        <textarea class="tc-input ov-intro2" rows="2">${isEdit ? escHtml(existingItem.intro2||'') : ''}</textarea>
+        <label class="tc-label">Användning (en rad per punkt)</label>
+        <textarea class="tc-input ov-usage" rows="4" placeholder="Visa presentationer&#10;Dela skärm">${isEdit && existingItem.usageItems ? existingItem.usageItems.join('\n') : ''}</textarea>
+        <button class="tc-btn ov-save">${isEdit ? '💾 Spara' : '✅ Skapa sida'}</button>
+        <div class="tc-err" style="display:none"></div>
+        <div class="tc-progress" style="display:none">
+          <div class="tc-progress-bar"><div class="tc-progress-fill"></div></div>
+          <div class="tc-progress-msg">Arbetar…</div>
+        </div>
+      </div>
+      <div class="tc-step" id="ov-step3" style="display:none">
+        <div class="tc-success">
+          <div class="tc-success-icon">✅</div>
+          <div class="tc-success-msg">${isEdit ? 'Ändringarna sparade!' : 'Tekniksidan skapad!'}</div>
+          <div class="tc-success-sub">Syns inom 1–2 minuter.</div>
+          <button class="tc-btn ov-done">Stäng</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('open'));
+
+  let selEmoji = isEdit ? existingItem.emoji : '';
+  let token = '';
+
+  if (isEdit) {
+    const btn = overlay.querySelector(`.tc-emoji-btn[data-emoji="${existingItem.emoji}"]`);
+    if (btn) btn.classList.add('selected');
+  }
+
+  overlay.querySelector('.tc-close').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+
+  overlay.querySelectorAll('.tc-emoji-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      overlay.querySelectorAll('.tc-emoji-btn').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+      selEmoji = b.dataset.emoji;
+      overlay.querySelector('.ov-emoji-preview').textContent = selEmoji;
+    });
+  });
+
+  const step1Err = overlay.querySelector('#ov-step1 .tc-err');
+  overlay.querySelector('.ov-next').addEventListener('click', () => {
+    const pwd = overlay.querySelector('.ov-pwd').value.trim();
+    if (!pwd) { step1Err.textContent = 'Ange lösenord.'; step1Err.style.display = 'block'; return; }
+    if (!checkPwd(pwd)) { step1Err.textContent = 'Fel lösenord!'; step1Err.style.display = 'block'; return; }
+    token = decodeToken(TOKEN_ENC, pwd);
+    overlay.querySelector('#ov-step1').style.display = 'none';
+    overlay.querySelector('#ov-step2').style.display = 'block';
+  });
+  overlay.querySelector('.ov-pwd').addEventListener('keydown', e => { if (e.key==='Enter') overlay.querySelector('.ov-next').click(); });
+
+  overlay.querySelector('.ov-save').addEventListener('click', async () => {
+    const err2 = overlay.querySelector('#ov-step2 .tc-err');
+    const techName   = overlay.querySelector('.ov-name').value.trim();
+    const intro1     = overlay.querySelector('.ov-intro1').value.trim();
+    const intro2     = overlay.querySelector('.ov-intro2').value.trim();
+    const usageItems = overlay.querySelector('.ov-usage').value.trim().split('\n').filter(u=>u.trim());
+    if (!selEmoji) { err2.textContent='Välj emoji.'; err2.style.display='block'; return; }
+    if (!techName)  { err2.textContent='Ange namn.'; err2.style.display='block'; return; }
+    if (!intro1)    { err2.textContent='Ange beskrivning.'; err2.style.display='block'; return; }
+    if (!usageItems.length) { err2.textContent='Ange minst ett användningsområde.'; err2.style.display='block'; return; }
+    err2.style.display = 'none';
+
+    const saveBtn = overlay.querySelector('.ov-save');
+    saveBtn.disabled = true;
+    const prog = overlay.querySelector('.tc-progress');
+    const progFill = overlay.querySelector('.tc-progress-fill');
+    const progMsg  = overlay.querySelector('.tc-progress-msg');
+    prog.style.display = 'block';
+    const setP = (p, m) => { progFill.style.width=p+'%'; progMsg.textContent=m; };
+
+    try {
+      const fileSlug = isEdit ? existingItem.file : 'ovrigt-' + slugifyOv(techName);
+      setP(20, 'Skapar sida…');
+      const html = generateOvTechPage(techName, selEmoji, intro1, intro2, usageItems);
+      const existing = await ghGetFileOv('tech/' + fileSlug + '.html', token);
+      await ghPutOv('tech/' + fileSlug + '.html', html, existing?.sha||null, (isEdit?'Uppdatera':'Ny') + ' teknik: ' + techName, token);
+
+      setP(70, 'Sparar metadata…');
+      const metaPath = 'tech-meta/meta_' + fileSlug + '.json';
+      const existingMeta = await ghGetFileOv(metaPath, token);
+      const meta = { id: existingMeta ? JSON.parse(decodeURIComponent(escape(atob(existingMeta.content.replace(/\n/g,''))))).id : Date.now(), techName, emoji: selEmoji, groupId: 'ovrigt', groupName: 'Övrig teknik', file: fileSlug, intro1, intro2, usageItems, date: new Date().toISOString() };
+      await ghPutOv(metaPath, JSON.stringify(meta,null,2), existingMeta?.sha||null, 'Meta: ' + techName, token);
+
+      setP(100, 'Klart!');
+      await new Promise(r=>setTimeout(r,400));
+      overlay.querySelector('#ov-step2').style.display = 'none';
+      overlay.querySelector('#ov-step3').style.display = 'block';
+    } catch(e) {
+      err2.textContent = 'Fel: ' + e.message;
+      err2.style.display = 'block';
+      prog.style.display = 'none';
+      saveBtn.disabled = false;
+    }
+  });
+
+  overlay.querySelector('.ov-done').addEventListener('click', () => { overlay.remove(); loadOvrigt(); });
+}
+
 if (sessionStorage.getItem('cl_auth') === '1') {
   document.getElementById('pwd-screen').style.display = 'none';
   document.getElementById('main-content').style.display = 'block';
   init();
+  loadOvrigt();
 }
 </script>
 </body>
