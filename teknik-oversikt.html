@@ -378,7 +378,7 @@ const TECH_PAGES = [
     { name: 'Datorer',            file: 'matsalen-datorer' },
     { name: 'Fliptavla',          file: 'matsalen-flip' },
   ]},
-  { group: 'Slangbellan', items: [
+  { group: 'Slångbellan', items: [
     { name: '3D-skrivare',        file: 'slangbellan-3d' },
     { name: 'Fliptavla',          file: 'slangbellan-fliptavla' },
     { name: 'Info',               file: 'slangbellan-info' },
@@ -685,8 +685,10 @@ async function ghGetFileOv(path, token) {
     const headers = { 'Accept': 'application/vnd.github.v3+json' };
     if (token) headers['Authorization'] = 'token ' + token;
     const r = await fetch(API + path + '?ref=' + BRANCH, { headers });
+    if (r.status === 404) return null;
     if (!r.ok) return null;
-    return r.json();
+    const data = await r.json();
+    return data;
   } catch(e) { return null; }
 }
 
@@ -930,12 +932,14 @@ function openOvModal(existingItem) {
       const fileSlug = isEdit ? existingItem.file : 'ovrigt-' + slugifyOv(techName);
       setP(20, 'Skapar sida…');
       const html = generateOvTechPage(techName, selEmoji, intro1, intro2, usageItems);
-      const existing = await ghGetFileOv('tech/' + fileSlug + '.html', token);
-      await ghPutOv('tech/' + fileSlug + '.html', html, existing?.sha||null, (isEdit?'Uppdatera':'Ny') + ' teknik: ' + techName, token);
+      let existing = null;
+      try { existing = await ghGetFileOv('tech/' + fileSlug + '.html', token); } catch(e) {}
+      await ghPutOv('tech/' + fileSlug + '.html', html, existing ? existing.sha : null, (isEdit?'Uppdatera':'Ny') + ' teknik: ' + techName, token);
 
       setP(70, 'Sparar metadata…');
       const metaPath = 'tech-meta/meta_' + fileSlug + '.json';
-      const existingMeta = await ghGetFileOv(metaPath, token);
+      let existingMeta = null;
+      try { existingMeta = await ghGetFileOv(metaPath, token); } catch(e) {}
       const meta = { id: existingMeta ? JSON.parse(decodeURIComponent(escape(atob(existingMeta.content.replace(/\n/g,''))))).id : Date.now(), techName, emoji: selEmoji, groupId: 'ovrigt', groupName: 'Övrig teknik', file: fileSlug, intro1, intro2, usageItems, date: new Date().toISOString() };
       await ghPutOv(metaPath, JSON.stringify(meta,null,2), existingMeta?.sha||null, 'Meta: ' + techName, token);
 
