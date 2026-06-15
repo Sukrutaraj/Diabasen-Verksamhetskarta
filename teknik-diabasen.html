@@ -430,6 +430,8 @@ const API       = 'https://api.github.com/repos/' + REPO + '/contents/';
 const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a3363037702605532085a5f005a5b6e';
 const PWD_HASH  = '79b497e2';
 
+let staffUnlocked = false;
+
 const TECH_PAGES = [
   { group: 'Grupp 1', items: [
     { name: '3D-skrivare',        file: 'grupp1-3d' },
@@ -737,7 +739,6 @@ if (checkPwd(pwd)) {
 });
 
 // --- Personal-läge ---
-let staffUnlocked = false;
 function toggleStaff() {
   if (staffUnlocked) {
     staffUnlocked = false;
