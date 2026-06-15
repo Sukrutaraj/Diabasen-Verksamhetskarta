@@ -1242,6 +1242,31 @@ function openOvModal(existingItem) {
   overlay.querySelector('.ov-done').addEventListener('click', () => { overlay.remove(); loadOvrigt(); });
 }
 
+// --- Personal-läge ---
+let staffUnlocked = false;
+function toggleStaff() {
+  const btn = document.getElementById('staff-btn');
+  if (staffUnlocked) {
+    staffUnlocked = false;
+    btn.textContent = '✏️ Personal';
+    btn.style.opacity = '0.6';
+    btn.style.color = '#888';
+    btn.style.borderColor = '#ccc';
+    document.getElementById('add-tech-bar').style.display = 'none';
+    document.querySelectorAll('.add-btn').forEach(el => el.style.display = 'none');
+  } else {
+    const pwd = prompt('Lösenord:');
+    if (!pwd || !checkPwd(pwd)) { alert('Fel lösenord!'); return; }
+    staffUnlocked = true;
+    btn.textContent = '🔒 Logga ut';
+    btn.style.opacity = '1';
+    btn.style.color = '#2c5f8a';
+    btn.style.borderColor = '#2c5f8a';
+    document.getElementById('add-tech-bar').style.display = 'flex';
+    document.querySelectorAll('.add-btn').forEach(el => el.style.display = 'inline-flex');
+  }
+}
+
 init();
 loadOvrigt();
 </script>
