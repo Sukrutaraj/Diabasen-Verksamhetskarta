@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Om Diabasen</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
+    .page-container { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+
+    .back-link { margin-bottom: 20px; }
+    .back-link a { color: #2c5f8a; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+    .back-link a:hover { text-decoration: underline; }
+
+    /* Hero */
+    .hero { text-align: center; margin-bottom: 36px; }
+    .hero h1 { font-size: 2rem; color: #2c3e50; margin-bottom: 10px; }
+    .hero-sub { color: #666; font-size: 0.95rem; }
+
+    /* Om-text */
+    .about-section { background: #fff; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; border: 1px solid #e0e6ed; }
+    .about-section p { color: #444; line-height: 1.7; margin: 0 0 14px; font-size: 0.97rem; }
+    .about-section p:last-child { margin-bottom: 0; }
+
+    /* Aktiviteter */
+    .section-title { font-size: 1.15rem; font-weight: 700; color: #2c3e50; margin: 0 0 16px; display: flex; align-items: center; gap: 8px; }
+    .activities-section { background: #fff; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; border: 1px solid #e0e6ed; }
+    .activity-category { margin-bottom: 18px; }
+    .activity-category:last-child { margin-bottom: 0; }
+    .activity-cat-title { font-size: 0.97rem; font-weight: 700; color: #2c3e50; margin-bottom: 6px; }
+    .activity-list { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+    .activity-list li { background: #f0f5fa; color: #2c5f8a; border-radius: 20px; padding: 4px 12px; font-size: 0.83rem; font-weight: 600; }
+
+    /* Teknik */
+    .tech-section { background: #fff; border-radius: 12px; padding: 24px 28px; margin-bottom: 28px; border: 1px solid #e0e6ed; }
+    .tech-group { margin-bottom: 24px; }
+    .tech-group:last-child { margin-bottom: 0; }
+    .tech-group-title { font-size: 0.88rem; font-weight: 700; color: #fff; background: #2c5f8a; padding: 5px 12px; border-radius: 6px; display: inline-block; margin-bottom: 12px; }
+
+    .tech-icons { display: flex; flex-wrap: wrap; gap: 12px; }
+    .tech-card {
+      display: flex; flex-direction: column; align-items: center;
+      text-decoration: none; color: #2c3e50;
+      width: 80px; text-align: center; position: relative;
+    }
+    .tech-card-icon {
+      font-size: 1.8rem; background: #f4f6f9;
+      border-radius: 50%; width: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #e0e6ed; margin-bottom: 5px;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .tech-card:hover .tech-card-icon { border-color: #2c5f8a; background: #e8f0f8; }
+    .tech-card-label { font-size: 0.75rem; font-weight: 600; line-height: 1.2; color: #444; }
+
+    /* Checklistor under ikon */
+    .tech-card-cls { width: 100%; margin-top: 4px; }
+    .tc-cl-chip {
+      display: block; background: #e8f4e8; color: #1b6b2f;
+      border: 1px solid #b7dfbf; border-radius: 12px;
+      padding: 2px 7px; font-size: 0.7rem; font-weight: 600;
+      text-decoration: none; margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 80px;
+    }
+    .tc-cl-chip:hover { background: #d0edcf; }
+
+    /* Personal-knappar (dolda initialt) */
+    .tech-card-btns {
+      display: none; position: absolute; top: 2px; right: -4px;
+      flex-direction: column; gap: 2px;
+    }
+    .staff-mode .tech-card-btns { display: flex; }
+    .tech-card-edit, .tech-card-del {
+      background: rgba(255,255,255,0.92); border: 1px solid #ddd;
+      border-radius: 5px; font-size: 0.7rem; width: 22px; height: 22px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;
+    }
+    .tech-card-edit:hover { background: #e8f0f8; border-color: #2c5f8a; }
+    .tech-card-del:hover  { background: #fde8e8; border-color: #e07070; }
+
+    /* Lägg till checklista-knapp (dold initialt) */
+    .tc-cl-add {
+      display: none; background: none; border: 1.5px dashed #aac4de;
+      color: #2c5f8a; border-radius: 12px; padding: 2px 7px;
+      font-size: 0.7rem; font-weight: 600; cursor: pointer;
+      font-family: inherit; margin-top: 2px; width: 100%;
+    }
+    .staff-mode .tc-cl-add { display: block; }
+
+    /* Lägg till teknik-knapp (dold initialt) */
+    .add-tech-row { display: none; justify-content: flex-start; margin-top: 8px; }
+    .staff-mode .add-tech-row { display: flex; }
+    .add-tech-small {
+      background: none; border: 1.5px dashed #aac4de;
+      color: #2c5f8a; border-radius: 20px; padding: 4px 12px;
+      font-size: 0.8rem; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: background 0.15s;
+    }
+    .add-tech-small:hover { background: #e8f0f8; border-color: #2c5f8a; }
+
+    /* Personal-knapp */
+    .staff-bar {
+      display: flex; justify-content: flex-end; margin-top: 8px;
+    }
+    .staff-toggle-btn {
+      background: none; border: 1px solid #ccc; border-radius: 20px;
+      padding: 6px 16px; font-size: 0.83rem; color: #888;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.15s; opacity: 0.6;
+    }
+    .staff-toggle-btn:hover { opacity: 1; border-color: #2c5f8a; color: #2c5f8a; }
+    .staff-toggle-btn.active { background: #2c5f8a; color: #fff; border-color: #2c5f8a; opacity: 1; }
+
+    .loading-msg { color: #888; font-size: 0.9rem; padding: 8px 0; }
+    .empty-msg { color: #bbb; font-size: 0.85rem; font-style: italic; }
+
+    /* Modal (tech-creator + checklist) */
+    .tc-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; padding: 16px; }
+    .tc-overlay.open { display: flex; }
+    .tc-modal { background: #fff; border-radius: 14px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
+    .tc-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 12px; border-bottom: 1px solid #eee; position: sticky; top: 0; background: #fff; z-index: 1; }
+    .tc-modal-title { font-size: 1rem; font-weight: 700; color: #2c3e50; }
+    .tc-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #888; padding: 2px 6px; border-radius: 4px; }
+    .tc-close:hover { background: #f0f0f0; }
+    .tc-step { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+    .tc-label { font-size: 0.83rem; font-weight: 700; color: #555; margin-top: 6px; }
+    .tc-input { padding: 9px 12px; border: 1.5px solid #d0d7de; border-radius: 8px; font-size: 0.92rem; font-family: inherit; background: #fafbfc; width: 100%; box-sizing: border-box; resize: vertical; }
+    .tc-input:focus { outline: none; border-color: #2c5f8a; background: #fff; }
+    .tc-select { padding: 9px 12px; border: 1.5px solid #d0d7de; border-radius: 8px; font-size: 0.92rem; font-family: inherit; background: #fafbfc; width: 100%; box-sizing: border-box; }
+    .tc-select:focus { outline: none; border-color: #2c5f8a; }
+    .tc-emoji-grid { display: flex; flex-wrap: wrap; gap: 5px; margin: 4px 0; max-height: 160px; overflow-y: auto; padding: 4px; border: 1px solid #e8e8e8; border-radius: 8px; background: #fafbfc; }
+    .tc-emoji-btn { font-size: 1.3rem; width: 36px; height: 36px; border: 2px solid transparent; border-radius: 7px; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tc-emoji-btn:hover { background: #e8f0f8; border-color: #aac4de; }
+    .tc-emoji-btn.selected { border-color: #2c5f8a; background: #ddeaf8; }
+    .tc-selected-emoji { font-size: 0.85rem; color: #555; margin: 2px 0 4px; }
+    .tc-btn { margin-top: 10px; padding: 10px 20px; background: #2c5f8a; color: #fff; border: none; border-radius: 9px; font-size: 0.92rem; font-weight: 700; cursor: pointer; font-family: inherit; align-self: flex-start; }
+    .tc-btn:hover:not(:disabled) { background: #1e4a6e; }
+    .tc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .tc-err { font-size: 0.86rem; color: #a12020; background: #fde8e8; border: 1px solid #f5b8b8; border-radius: 7px; padding: 7px 11px; margin-top: 4px; }
+    .tc-progress { margin-top: 12px; }
+    .tc-progress-bar { background: #e8edf2; border-radius: 20px; height: 8px; overflow: hidden; margin-bottom: 6px; }
+    .tc-progress-fill { height: 100%; background: #2c5f8a; border-radius: 20px; width: 0%; transition: width 0.4s ease; }
+    .tc-progress-msg { font-size: 0.85rem; color: #555; }
+    .tc-success { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 0 10px; gap: 8px; }
+    .tc-success-icon { font-size: 2.5rem; }
+    .tc-success-msg { font-size: 1.1rem; font-weight: 700; color: #1b6b2f; }
+    .tc-success-sub { font-size: 0.88rem; color: #666; margin-bottom: 8px; }
+
+    @media (max-width: 520px) {
+      .about-section, .activities-section, .tech-section { padding: 18px 16px; }
+      .hero h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-container">
+
+  <div class="back-link"><a href="index.html">← Tillbaka till kartan</a></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>🏠 Om Diabasen</h1>
+  </div>
+
+  <!-- OM VERKSAMHETEN -->
+  <div class="about-section">
+    <p>
+      Diabasen är en daglig verksamhet där gemenskap, utveckling och delaktighet står i fokus.
+      Här finns olika grupper och aktiviteter med varierande inriktningar, där skapande, teknik,
+      lärande och social samvaro är en naturlig del av vardagen.
+    </p>
+    <p>
+      Vi strävar efter att skapa en trygg och meningsfull miljö där varje person får möjlighet
+      att utvecklas utifrån sina egna styrkor, intressen och mål.
+    </p>
+    <p>
+      Tillsammans bygger vi en verksamhet där alla kan vara delaktiga och bidra på sitt eget sätt.
+    </p>
+  </div>
+
+  <!-- AKTIVITETER -->
+  <div class="activities-section">
+    <div class="section-title">🎯 Aktiviteter på Diabasen</div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">🎨 Kreativa aktiviteter</div>
+      <ul class="activity-list">
+        <li>Rita och måla</li><li>Skapa med olika material</li><li>Teater och sceniskt arbete</li>
+        <li>Forumteater och improvisation</li><li>Musik, sång och instrument</li>
+        <li>Film och videoredigering</li><li>AI-bildskapande</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">💻 Teknik och digitalt</div>
+      <ul class="activity-list">
+        <li>Spela dator- och TV-spel</li><li>Utforska ny teknik</li>
+        <li>3D-modellering och 3D-printing</li><li>Arbeta med AI-verktyg</li>
+        <li>Digitalt skapande</li><li>Appar och digitala hjälpmedel</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">🎮 Spel och socialt</div>
+      <ul class="activity-list">
+        <li>Sällskapsspel</li><li>Digitala gruppspel</li><li>Quiz</li>
+        <li>Pingis</li><li>Fredagsfika</li><li>Gemensamma aktiviteter</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">🎭 Kommunikation och uttryck</div>
+      <ul class="activity-list">
+        <li>Träna sociala färdigheter</li><li>Rollspel och samarbete</li>
+        <li>Planera föreställningar</li><li>Samtal och reflektion</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">📰 Media och produktion</div>
+      <ul class="activity-list">
+        <li>Tidningsproduktion</li><li>Fotografering</li>
+        <li>Filma och redigera</li><li>Skapa med AI</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">🧩 Struktur och självständighet</div>
+      <ul class="activity-list">
+        <li>Scheman och tidshjälpmedel</li><li>Checklistor och instruktioner</li>
+        <li>Träna självständighet</li><li>Göra egna val</li>
+      </ul>
+    </div>
+
+    <div class="activity-category">
+      <div class="activity-cat-title">🚶 Rörelse och hälsa</div>
+      <ul class="activity-list">
+        <li>Promenader</li><li>Pingis</li><li>Utflykter</li><li>Aktiviteter utomhus</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- TEKNIK -->
+  <div class="tech-section">
+    <div class="section-title">🔧 Teknik i verksamheten</div>
+    <div id="tech-content"><div class="loading-msg">Laddar teknik…</div></div>
+    <div class="staff-bar">
+      <button class="staff-toggle-btn" id="staff-toggle-btn">✏️ Personal</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- MODAL: Lägg till teknik -->
+<div class="tc-overlay" id="add-tech-overlay">
+  <div class="tc-modal">
+    <div class="tc-modal-header">
+      <span class="tc-modal-title">➕ Lägg till ny teknik</span>
+      <button class="tc-close" id="add-tech-close">✕</button>
+    </div>
+    <div class="tc-step" id="at-step1">
+      <label class="tc-label">Lösenord</label>
+      <input type="password" class="tc-input" id="at-pwd" placeholder="Ange lösenord" />
+      <button class="tc-btn" id="at-next">Fortsätt →</button>
+      <div class="tc-err" id="at-err1" style="display:none"></div>
+    </div>
+    <div class="tc-step" id="at-step2" style="display:none">
+      <label class="tc-label">Grupp</label>
+      <select class="tc-select" id="at-group">
+        <option value="">— Välj grupp —</option>
+        <option value="grupp1|Grupp 1|groups/grupp1-teknik.html">Grupp 1</option>
+        <option value="grupp2|Grupp 2|groups/grupp2-teknik.html">Grupp 2</option>
+        <option value="grupp3|Grupp 3|groups/grupp3-teknik.html">Grupp 3</option>
+        <option value="grupp45|Grupp 4 & 5|groups/grupp45-teknik.html">Grupp 4 & 5</option>
+        <option value="matsalen|Matsalen|groups/matsalen-teknik.html">Matsalen</option>
+        <option value="slangbellan|Teater Slångbellan|groups/slangbellan-teknik.html">Teater Slångbellan</option>
+        <option value="studion|Studion|groups/studion-teknik.html">Studion</option>
+        <option value="ovrigt|Övrig teknik|">Övrig teknik</option>
+      </select>
+      <label class="tc-label">Emoji</label>
+      <div class="tc-emoji-grid" id="at-emoji-grid"></div>
+      <div class="tc-selected-emoji">Vald: <span id="at-emoji-preview">–</span></div>
+      <label class="tc-label">Namn</label>
+      <input type="text" class="tc-input" id="at-name" placeholder="T.ex. VR-headset" />
+      <label class="tc-label">Beskrivning</label>
+      <textarea class="tc-input" id="at-intro1" rows="2" placeholder="Beskriv tekniken..."></textarea>
+      <label class="tc-label">Beskrivning 2 (valfritt)</label>
+      <textarea class="tc-input" id="at-intro2" rows="2"></textarea>
+      <label class="tc-label">Användning (en rad per punkt)</label>
+      <textarea class="tc-input" id="at-usage" rows="4" placeholder="Träna koordination&#10;Arbeta kreativt"></textarea>
+      <button class="tc-btn" id="at-save">✅ Skapa tekniksida</button>
+      <div class="tc-err" id="at-err2" style="display:none"></div>
+      <div class="tc-progress" id="at-progress" style="display:none">
+        <div class="tc-progress-bar"><div class="tc-progress-fill" id="at-fill"></div></div>
+        <div class="tc-progress-msg" id="at-msg">Arbetar…</div>
+      </div>
+    </div>
+    <div class="tc-step" id="at-step3" style="display:none">
+      <div class="tc-success">
+        <div class="tc-success-icon">✅</div>
+        <div class="tc-success-msg">Tekniksidan är skapad!</div>
+        <div class="tc-success-sub">Syns inom 1–2 minuter.</div>
+        <button class="tc-btn" id="at-done">Stäng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Lägg till checklista -->
+<div class="tc-overlay" id="add-cl-overlay">
+  <div class="tc-modal">
+    <div class="tc-modal-header">
+      <span class="tc-modal-title" id="cl-modal-title">Lägg till checklista</span>
+      <button class="tc-close" id="add-cl-close">✕</button>
+    </div>
+    <div class="tc-step" id="cl-step1">
+      <label class="tc-label">Lösenord</label>
+      <input type="password" class="tc-input" id="cl-pwd" placeholder="Ange lösenord" />
+      <button class="tc-btn" id="cl-next">Lås upp</button>
+      <div class="tc-err" id="cl-err1" style="display:none"></div>
+    </div>
+    <div class="tc-step" id="cl-step2" style="display:none">
+      <label class="tc-label">Titel</label>
+      <input type="text" class="tc-input" id="cl-title" placeholder="T.ex. Starta maskinen" />
+      <label class="tc-label">Länk till checklistan</label>
+      <input type="url" class="tc-input" id="cl-url" placeholder="https://sukrutaraj.github.io/digital-checklist-maker/…" />
+      <label class="tc-label">Ditt namn</label>
+      <input type="text" class="tc-input" id="cl-name" placeholder="Förnamn" />
+      <button class="tc-btn" id="cl-save">Spara checklista</button>
+      <div class="tc-err" id="cl-err2" style="display:none"></div>
+    </div>
+    <div class="tc-step" id="cl-step3" style="display:none">
+      <div class="tc-success">
+        <div class="tc-success-icon">✅</div>
+        <div class="tc-success-msg">Checklistan är sparad!</div>
+        <div class="tc-success-sub">Syns inom 1–2 minuter.</div>
+        <button class="tc-btn" id="cl-done">Stäng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const REPO      = 'sukrutaraj/Diabasen-Verksamhetskarta';
+const BRANCH    = 'main';
+const API       = 'https://api.github.com/repos/' + REPO + '/contents/';
+const BASE      = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
+const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a3363037702605532085a5f005a5b6e';
+const PWD_HASH  = '79b497e2';
+
+const TECH_GROUPS = [
+  { group: 'Grupp 1',         id: 'grupp1',      file: 'groups/grupp1-teknik.html' },
+  { group: 'Grupp 2',         id: 'grupp2',      file: 'groups/grupp2-teknik.html' },
+  { group: 'Grupp 3',         id: 'grupp3',      file: 'groups/grupp3-teknik.html' },
+  { group: 'Grupp 4 & 5',     id: 'grupp45',     file: 'groups/grupp45-teknik.html' },
+  { group: 'Matsalen',        id: 'matsalen',    file: 'groups/matsalen-teknik.html' },
+  { group: 'Teater Slångbellan', id: 'slangbellan', file: 'groups/slangbellan-teknik.html' },
+  { group: 'Studion',         id: 'studion',     file: 'groups/studion-teknik.html' },
+  { group: 'Övrig teknik',    id: 'ovrigt',      file: null },
+];
+
+const EMOJI_LIST = [
+  '💻','🖥️','🖨️','⌨️','🖱️','📱','📲','☎️','📺','📻',
+  '🎙️','🎛️','📡','🔋','🔌','💡','🎵','🎶','🎸','🎹',
+  '🎺','🎻','🥁','🎤','🎧','🎮','🕹️','🎲','🧩','🎨',
+  '✏️','📐','🔬','🔭','🤖','⚙️','🔧','🔩','🛠️','💾',
+  '💿','📀','📷','📸','📹','🚗','🚌','🚲','✈️','🚀',
+  '🌱','🌍','⭐','🌈','🔥','💧','📚','📖','📝','📊',
+];
+
+// --- Auth ---
+function checkPwd(pwd) {
+  let h = 0;
+  for (let i = 0; i < pwd.length; i++) h = (Math.imul(31, h) + pwd.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(16) === PWD_HASH;
+}
+function xorStr(str, key) {
+  let out = '';
+  for (let i = 0; i < str.length; i++) out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return out;
+}
+function decodeToken(enc, pwd) {
+  return xorStr(enc.match(/.{1,2}/g).map(h => String.fromCharCode(parseInt(h, 16))).join(''), pwd);
+}
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function slugify(str) {
+  return str.toLowerCase().replace(/å/g,'a').replace(/ä/g,'a').replace(/ö/g,'o').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+
+// --- GitHub API ---
+async function ghGet(path, token) {
+  const headers = { 'Accept': 'application/vnd.github.v3+json' };
+  if (token) headers['Authorization'] = 'token ' + token;
+  const r = await fetch(API + path + '?ref=' + BRANCH, { headers });
+  if (r.status === 404) return null;
+  if (!r.ok) return null;
+  return r.json();
+}
+async function ghPut(path, content, sha, message, token) {
+  const bytes = new TextEncoder().encode(content);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  const b64 = btoa(binary);
+  const body = { message, content: b64, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(API + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.message || r.status); }
+  return r.json();
+}
+async function ghDelete(path, sha, message, token) {
+  const r = await fetch(API + path, {
+    method: 'DELETE',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify({ message, sha, branch: BRANCH })
+  });
+  if (!r.ok) throw new Error('Borttagning: ' + r.status);
+}
+
+// --- Hämta all teknik från tech-meta ---
+async function fetchAllTechMeta() {
+  try {
+    const files = await ghGet('tech-meta', null);
+    if (!files) return [];
+    const metaFiles = files.filter(f => f.name.startsWith('meta_') && f.name.endsWith('.json'));
+    const items = [];
+    for (const mf of metaFiles) {
+      try {
+        const r = await fetch(BASE + 'tech-meta/' + mf.name);
+        if (!r.ok) continue;
+        const meta = await r.json();
+        items.push({ ...meta, _file: mf.name, _sha: mf.sha });
+      } catch(e) {}
+    }
+    return items;
+  } catch(e) { return []; }
+}
+
+// --- Hämta checklistor för en tekniksida ---
+async function fetchClsForPage(pageId) {
+  try {
+    const files = await ghGet('checklists', null);
+    if (!files) return [];
+    const metaFiles = files.filter(f => f.name.startsWith('meta_') && f.name.endsWith('.json'));
+    const items = [];
+    for (const mf of metaFiles) {
+      try {
+        const r = await fetch(BASE + 'checklists/' + mf.name);
+        if (!r.ok) continue;
+        const meta = await r.json();
+        if (meta.page === pageId) items.push({ ...meta, _file: mf.name, _sha: mf.sha });
+      } catch(e) {}
+    }
+    return items.sort((a,b) => a.id - b.id);
+  } catch(e) { return []; }
+}
+
+// --- Rendera teknik ---
+let staffMode = false;
+let allTechMeta = [];
+let allCls = {};
+
+async function loadTech() {
+  const container = document.getElementById('tech-content');
+  container.innerHTML = '<div class="loading-msg">Laddar teknik…</div>';
+
+  allTechMeta = await fetchAllTechMeta();
+
+  // Hämta checklistor för alla tekniksidor
+  const uniquePages = [...new Set(allTechMeta.map(t => t.file))];
+  for (const pageId of uniquePages) {
+    allCls[pageId] = await fetchClsForPage(pageId);
+  }
+
+  renderTech();
+}
+
+function renderTech() {
+  const container = document.getElementById('tech-content');
+  container.innerHTML = '';
+
+  const bodyEl = document.body;
+  if (staffMode) bodyEl.classList.add('staff-mode');
+  else bodyEl.classList.remove('staff-mode');
+
+  TECH_GROUPS.forEach(group => {
+    const groupItems = allTechMeta.filter(t => t.groupId === group.id);
+    if (groupItems.length === 0 && !staffMode) return;
+
+    const div = document.createElement('div');
+    div.className = 'tech-group';
+
+    const title = document.createElement('div');
+    title.className = 'tech-group-title';
+    title.textContent = group.group;
+    div.appendChild(title);
+
+    const iconsEl = document.createElement('div');
+    iconsEl.className = 'tech-icons';
+
+    groupItems.sort((a,b) => a.id - b.id).forEach(item => {
+      const cls = allCls[item.file] || [];
+      const card = document.createElement('a');
+      card.className = 'tech-card';
+      card.href = 'tech/' + item.file + '.html';
+
+      const iconEl = document.createElement('div');
+      iconEl.className = 'tech-card-icon';
+      iconEl.textContent = item.emoji;
+
+      const labelEl = document.createElement('div');
+      labelEl.className = 'tech-card-label';
+      labelEl.textContent = item.techName;
+
+      const clsEl = document.createElement('div');
+      clsEl.className = 'tech-card-cls';
+      cls.forEach(cl => {
+        const a = document.createElement('a');
+        a.className = 'tc-cl-chip';
+        a.href = cl.url;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.title = cl.title;
+        a.textContent = cl.title;
+        a.addEventListener('click', e => e.stopPropagation());
+        clsEl.appendChild(a);
+      });
+
+      // Lägg till checklista-knapp (visas i staff-mode)
+      const clAddBtn = document.createElement('button');
+      clAddBtn.className = 'tc-cl-add';
+      clAddBtn.textContent = '+ Checklista';
+      clAddBtn.addEventListener('click', e => {
+        e.preventDefault();
+        openClModal(item.file, item.techName);
+      });
+      clsEl.appendChild(clAddBtn);
+
+      // Personal-knappar
+      const btns = document.createElement('div');
+      btns.className = 'tech-card-btns';
+      const editBtn = document.createElement('button');
+      editBtn.className = 'tech-card-edit';
+      editBtn.title = 'Redigera';
+      editBtn.textContent = '✏️';
+      editBtn.addEventListener('click', e => { e.preventDefault(); openEditTechModal(item, group); });
+      const delBtn = document.createElement('button');
+      delBtn.className = 'tech-card-del';
+      delBtn.title = 'Ta bort';
+      delBtn.textContent = '🗑️';
+      delBtn.addEventListener('click', e => {
+        e.preventDefault();
+        if (!confirm('Ta bort "' + item.techName + '"?')) return;
+        const pwd = prompt('Lösenord:');
+        if (!pwd || !checkPwd(pwd)) { alert('Fel lösenord!'); return; }
+        const token = decodeToken(TOKEN_ENC, pwd);
+        card.style.opacity = '0.4';
+        deleteTech(item, group.file, token).then(() => loadTech()).catch(err => { alert('Fel: ' + err.message); card.style.opacity = '1'; });
+      });
+      btns.appendChild(editBtn);
+      btns.appendChild(delBtn);
+
+      card.appendChild(iconEl);
+      card.appendChild(labelEl);
+      card.appendChild(clsEl);
+      card.appendChild(btns);
+      iconsEl.appendChild(card);
+    });
+
+    // Lägg till teknik-knapp (staff-mode)
+    const addRow = document.createElement('div');
+    addRow.className = 'add-tech-row';
+    const addBtn = document.createElement('button');
+    addBtn.className = 'add-tech-small';
+    addBtn.textContent = '➕ Lägg till teknik';
+    addBtn.addEventListener('click', () => openAddTechModal(group));
+    addRow.appendChild(addBtn);
+    iconsEl.appendChild(addRow);
+
+    div.appendChild(iconsEl);
+    container.appendChild(div);
+  });
+
+  if (allTechMeta.length === 0) {
+    container.innerHTML = '<div class="empty-msg">Ingen teknik tillagd än.</div>';
+  }
+}
+
+// --- Staff toggle ---
+let staffToken = '';
+document.getElementById('staff-toggle-btn').addEventListener('click', () => {
+  if (staffMode) {
+    staffMode = false;
+    staffToken = '';
+    document.getElementById('staff-toggle-btn').classList.remove('active');
+    document.getElementById('staff-toggle-btn').textContent = '✏️ Personal';
+    renderTech();
+  } else {
+    const pwd = prompt('Lösenord:');
+    if (!pwd || !checkPwd(pwd)) { alert('Fel lösenord!'); return; }
+    staffToken = decodeToken(TOKEN_ENC, pwd);
+    staffMode = true;
+    document.getElementById('staff-toggle-btn').classList.add('active');
+    document.getElementById('staff-toggle-btn').textContent = '🔒 Logga ut';
+    renderTech();
+  }
+});
+
+// --- Ta bort teknik ---
+async function deleteTech(item, groupFile, token) {
+  const page = await ghGet('tech/' + item.file + '.html', token);
+  if (page) await ghDelete('tech/' + item.file + '.html', page.sha, 'Ta bort: ' + item.techName, token);
+  if (groupFile) {
+    const gp = await ghGet(groupFile, token);
+    if (gp) {
+      let html = decodeURIComponent(escape(atob(gp.content.replace(/\n/g,''))));
+      html = html.replace(new RegExp(`\\s*<a href="\\.\\./tech/${item.file}\\.html"[^>]*>[\\s\\S]*?</a>`, 'g'), '');
+      await ghPut(groupFile, html, gp.sha, 'Ta bort ' + item.techName, token);
+    }
+  }
+  const meta = await ghGet('tech-meta/' + item._file, token);
+  if (meta) await ghDelete('tech-meta/' + item._file, meta.sha, 'Ta bort meta: ' + item.techName, token);
+}
+
+// --- Lägg till teknik modal ---
+let atSelEmoji = '';
+let atToken = '';
+let atTargetGroup = null;
+
+// Fyll emoji-grid
+const atEmojiGrid = document.getElementById('at-emoji-grid');
+EMOJI_LIST.forEach(e => {
+  const btn = document.createElement('button');
+  btn.className = 'tc-emoji-btn'; btn.dataset.emoji = e; btn.textContent = e;
+  btn.addEventListener('click', () => {
+    atEmojiGrid.querySelectorAll('.tc-emoji-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected'); atSelEmoji = e;
+    document.getElementById('at-emoji-preview').textContent = e;
+  });
+  atEmojiGrid.appendChild(btn);
+});
+
+function resetAtModal() {
+  atSelEmoji = ''; atToken = ''; atTargetGroup = null;
+  ['at-pwd','at-name','at-intro1','at-intro2','at-usage'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('at-group').value = '';
+  document.getElementById('at-err1').style.display = 'none';
+  document.getElementById('at-err2').style.display = 'none';
+  document.getElementById('at-progress').style.display = 'none';
+  document.getElementById('at-step1').style.display = 'block';
+  document.getElementById('at-step2').style.display = 'none';
+  document.getElementById('at-step3').style.display = 'none';
+  atEmojiGrid.querySelectorAll('.tc-emoji-btn').forEach(b => b.classList.remove('selected'));
+  document.getElementById('at-emoji-preview').textContent = '–';
+}
+
+function openAddTechModal(group) {
+  resetAtModal();
+  if (group) {
+    // Förfyll gruppen
+    const opt = document.querySelector(`#at-group option[value^="${group.id}|"]`);
+    if (opt) document.getElementById('at-group').value = opt.value;
+    document.getElementById('at-group').disabled = true;
+  } else {
+    document.getElementById('at-group').disabled = false;
+  }
+  // Om redan inloggad
+  if (staffToken) {
+    atToken = staffToken;
+    document.getElementById('at-step1').style.display = 'none';
+    document.getElementById('at-step2').style.display = 'block';
+  }
+  document.getElementById('add-tech-overlay').classList.add('open');
+}
+
+function openEditTechModal(item, group) {
+  resetAtModal();
+  atToken = staffToken;
+  atTargetGroup = { ...item, groupFile: group.file };
+  const opt = document.querySelector(`#at-group option[value^="${item.groupId}|"]`);
+  if (opt) document.getElementById('at-group').value = opt.value;
+  document.getElementById('at-group').disabled = true;
+  document.getElementById('at-name').value = item.techName || '';
+  document.getElementById('at-intro1').value = item.intro1 || '';
+  document.getElementById('at-intro2').value = item.intro2 || '';
+  document.getElementById('at-usage').value = (item.usageItems || []).join('\n');
+  atSelEmoji = item.emoji || '';
+  document.getElementById('at-emoji-preview').textContent = atSelEmoji;
+  const selBtn = atEmojiGrid.querySelector(`.tc-emoji-btn[data-emoji="${atSelEmoji}"]`);
+  if (selBtn) selBtn.classList.add('selected');
+  document.getElementById('at-step1').style.display = 'none';
+  document.getElementById('at-step2').style.display = 'block';
+  document.getElementById('add-tech-overlay').classList.add('open');
+}
+
+document.getElementById('add-tech-close').addEventListener('click', () => document.getElementById('add-tech-overlay').classList.remove('open'));
+document.getElementById('add-tech-overlay').addEventListener('click', e => { if (e.target === document.getElementById('add-tech-overlay')) document.getElementById('add-tech-overlay').classList.remove('open'); });
+
+document.getElementById('at-next').addEventListener('click', () => {
+  const pwd = document.getElementById('at-pwd').value.trim();
+  const err = document.getElementById('at-err1');
+  if (!pwd) { err.textContent = 'Ange lösenord.'; err.style.display = 'block'; return; }
+  if (!checkPwd(pwd)) { err.textContent = 'Fel lösenord!'; err.style.display = 'block'; return; }
+  atToken = decodeToken(TOKEN_ENC, pwd);
+  document.getElementById('at-step1').style.display = 'none';
+  document.getElementById('at-step2').style.display = 'block';
+});
+document.getElementById('at-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('at-next').click(); });
+
+document.getElementById('at-save').addEventListener('click', async () => {
+  const err = document.getElementById('at-err2');
+  const groupVal   = document.getElementById('at-group').value;
+  const techName   = document.getElementById('at-name').value.trim();
+  const intro1     = document.getElementById('at-intro1').value.trim();
+  const intro2     = document.getElementById('at-intro2').value.trim();
+  const usageItems = document.getElementById('at-usage').value.trim().split('\n').filter(u => u.trim());
+  if (!groupVal)          { err.textContent = 'Välj grupp.'; err.style.display = 'block'; return; }
+  if (!atSelEmoji)        { err.textContent = 'Välj emoji.'; err.style.display = 'block'; return; }
+  if (!techName)          { err.textContent = 'Ange namn.'; err.style.display = 'block'; return; }
+  if (!intro1)            { err.textContent = 'Ange beskrivning.'; err.style.display = 'block'; return; }
+  if (!usageItems.length) { err.textContent = 'Ange användning.'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
+
+  const [groupId, groupName, techFile] = groupVal.split('|');
+  const isEdit   = !!atTargetGroup;
+  const fileSlug = isEdit ? atTargetGroup.file : (groupId === 'ovrigt' ? 'ovrigt-' : groupId + '-') + slugify(techName);
+  const backUrl  = groupId === 'ovrigt' ? '../om-diabasen.html' : '../groups/' + groupId + '-teknik.html';
+
+  const saveBtn = document.getElementById('at-save');
+  saveBtn.disabled = true;
+  const prog = document.getElementById('at-progress');
+  const fill = document.getElementById('at-fill');
+  const msg  = document.getElementById('at-msg');
+  prog.style.display = 'block';
+  const setP = (p, m) => { fill.style.width = p + '%'; msg.textContent = m; };
+
+  try {
+    setP(20, 'Skapar sida…');
+    const usageList = usageItems.map(u => `                    <li>${escHtml(u.trim())}</li>`).join('\n');
+    const intro2Block = intro2 ? `\n            <p class="intro-text">\n                ${escHtml(intro2)}\n            </p>` : '';
+    const pageHtml = `<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${escHtml(techName)}</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/checklist.css">
+</head>
+<body>
+<div class="page-container">
+    <div class="back-link"><a href="${backUrl}">← Tillbaka till Teknik i rummet</a></div>
+    <div class="read-top">
+        <button class="read-button stop-button" onclick="toggleRead()">🔊 Svenska</button>
+        <button class="read-button read-btn-en" onclick="readEnglish()">🔊 English</button>
+        <button class="read-button read-btn-ar" onclick="readArabic()">🔊 العربية</button>
+        <button class="read-button read-btn-so" onclick="readSomali()">🔊 Somali</button>
+    </div>
+    <h1 class="page-title">${escHtml(techName.toUpperCase())}</h1>
+    <div class="readable-content">
+        <div class="content-card">
+            <p class="intro-text">
+                ${escHtml(intro1)}
+            </p>${intro2Block}
+            <h2>Hur vi använder ${escHtml(techName)}</h2>
+            <div class="tech-description">
+                <ul>
+${usageList}
+                </ul>
+            </div>
+            <h2>Kom igång</h2>
+            <p>Här finns checklistor för hur man använder ${escHtml(techName)} på ett tryggt sätt.</p>
+            <div class="cl-widget"></div>
+        </div>
+    </div>
+</div>
+<script src="../js/read.js"><\/script>
+<script src="../js/checklist.js"><\/script>
+</body>
+</html>`;
+
+    const existingPage = await ghGet('tech/' + fileSlug + '.html', atToken);
+    await ghPut('tech/' + fileSlug + '.html', pageHtml, existingPage ? existingPage.sha : null, (isEdit?'Uppdatera':'Ny') + ' teknik: ' + techName, atToken);
+
+    if (!isEdit && techFile) {
+      setP(55, 'Uppdaterar tekniklistan…');
+      const gp = await ghGet(techFile, atToken);
+      if (gp) {
+        let html = decodeURIComponent(escape(atob(gp.content.replace(/\n/g,''))));
+        const newItem = `\n            <a href="../tech/${fileSlug}.html" class="tech-item">\n                <div class="tech-icon">${atSelEmoji}</div>\n                <div class="tech-label">${escHtml(techName)}</div>\n            </a>`;
+        const marker = '\n        <!-- Avdelare -->';
+        const gridEnd = html.lastIndexOf('</div>', html.indexOf(marker));
+        if (gridEnd !== -1) html = html.slice(0, gridEnd) + newItem + '\n\n        </div>' + html.slice(gridEnd + 6);
+        await ghPut(techFile, html, gp.sha, 'Lägg till ' + techName, atToken);
+      }
+    }
+
+    setP(80, 'Sparar metadata…');
+    const metaPath = 'tech-meta/meta_' + fileSlug + '.json';
+    const existingMeta = await ghGet(metaPath, atToken);
+    const meta = { id: existingMeta ? JSON.parse(decodeURIComponent(escape(atob(existingMeta.content.replace(/\n/g,''))))).id : Date.now(), techName, emoji: atSelEmoji, groupId, groupName, file: fileSlug, intro1, intro2, usageItems, date: new Date().toISOString() };
+    await ghPut(metaPath, JSON.stringify(meta, null, 2), existingMeta ? existingMeta.sha : null, 'Meta: ' + techName, atToken);
+
+    setP(100, 'Klart!');
+    await new Promise(r => setTimeout(r, 400));
+    document.getElementById('at-step2').style.display = 'none';
+    document.getElementById('at-step3').style.display = 'block';
+  } catch(e) {
+    err.textContent = 'Fel: ' + e.message;
+    err.style.display = 'block';
+    prog.style.display = 'none';
+    saveBtn.disabled = false;
+  }
+});
+
+document.getElementById('at-done').addEventListener('click', () => {
+  document.getElementById('add-tech-overlay').classList.remove('open');
+  loadTech();
+});
+
+// --- Lägg till checklista modal ---
+let clPageId = '';
+let clToken = '';
+
+function openClModal(pageId, techName) {
+  clPageId = pageId;
+  document.getElementById('cl-modal-title').textContent = '📋 Checklista – ' + techName;
+  ['cl-pwd','cl-title','cl-url','cl-name'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('cl-err1').style.display = 'none';
+  document.getElementById('cl-err2').style.display = 'none';
+  document.getElementById('cl-step1').style.display = 'block';
+  document.getElementById('cl-step2').style.display = 'none';
+  document.getElementById('cl-step3').style.display = 'none';
+  document.getElementById('add-cl-overlay').classList.add('open');
+}
+
+document.getElementById('add-cl-close').addEventListener('click', () => document.getElementById('add-cl-overlay').classList.remove('open'));
+document.getElementById('add-cl-overlay').addEventListener('click', e => { if (e.target === document.getElementById('add-cl-overlay')) document.getElementById('add-cl-overlay').classList.remove('open'); });
+
+document.getElementById('cl-next').addEventListener('click', () => {
+  const pwd = document.getElementById('cl-pwd').value.trim();
+  const err = document.getElementById('cl-err1');
+  if (!pwd) { err.textContent = 'Ange lösenord.'; err.style.display = 'block'; return; }
+  if (!checkPwd(pwd)) { err.textContent = 'Fel lösenord!'; err.style.display = 'block'; return; }
+  clToken = decodeToken(TOKEN_ENC, pwd);
+  document.getElementById('cl-step1').style.display = 'none';
+  document.getElementById('cl-step2').style.display = 'block';
+});
+document.getElementById('cl-pwd').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('cl-next').click(); });
+
+document.getElementById('cl-save').addEventListener('click', async () => {
+  const err = document.getElementById('cl-err2');
+  const title = document.getElementById('cl-title').value.trim();
+  const url   = document.getElementById('cl-url').value.trim();
+  const name  = document.getElementById('cl-name').value.trim();
+  if (!title || !url) { err.textContent = 'Fyll i titel och länk.'; err.style.display = 'block'; return; }
+  const btn = document.getElementById('cl-save');
+  btn.disabled = true; btn.textContent = 'Sparar…';
+  try {
+    const id = Date.now();
+    const meta = { id, title, url, addedBy: name || 'Okänd', date: new Date().toISOString(), page: clPageId };
+    const path = 'checklists/meta_' + id + '.json';
+    await ghPut(path, JSON.stringify(meta, null, 2), null, 'Lägg till checklista: ' + title, clToken);
+    document.getElementById('cl-step2').style.display = 'none';
+    document.getElementById('cl-step3').style.display = 'block';
+  } catch(e) {
+    err.textContent = 'Fel: ' + e.message; err.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Spara checklista';
+  }
+});
+
+document.getElementById('cl-done').addEventListener('click', () => {
+  document.getElementById('add-cl-overlay').classList.remove('open');
+  loadTech();
+});
+
+// --- Init ---
+loadTech();
+</script>
+</body>
+</html>
