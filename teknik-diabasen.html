@@ -307,7 +307,7 @@
     <div class="back-link"><a href="om-diabasen.html">← Tillbaka till Om Diabasen</a></div>
     <h1 class="center-title">TEKNIK I VERKSAMHETEN</h1>
     
-    <div class="add-tech-bar"><button class="add-tech-btn" id="global-add-tech-btn" style="display:none">➕ Lägg till ny teknik</button></div>
+    <div class="add-tech-bar" id="add-tech-bar" style="display:none"><button class="add-tech-btn" id="global-add-tech-btn">➕ Lägg till ny teknik</button></div>
     <div class="stats-bar" id="stats-bar"><div class="stat">Laddar…</div></div>
     <div id="overview-container"><div class="loading-msg">Hämtar checklistor…</div></div>
 
@@ -382,6 +382,9 @@
       <div class="ovrigt-empty">Laddar…</div>
     </div>
   </div>
+  <div style="display:flex;justify-content:flex-end;margin-top:20px">
+    <button id="staff-btn" onclick="toggleStaff()" style="background:none;border:1px solid #ccc;border-radius:20px;padding:7px 16px;font-size:0.83rem;color:#888;cursor:pointer;font-family:inherit;opacity:0.6;transition:all 0.15s">✏️ Personal</button>
+  </div>
   </div>
 </div>
 
@@ -429,8 +432,6 @@ const BASE      = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '
 const API       = 'https://api.github.com/repos/' + REPO + '/contents/';
 const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a3363037702605532085a5f005a5b6e';
 const PWD_HASH  = '79b497e2';
-
-let staffUnlocked = false;
 
 const TECH_PAGES = [
   { group: 'Grupp 1', items: [
@@ -593,7 +594,7 @@ function render(allChecklists) {
       }
 
       const addBtn = document.createElement('button');
-      addBtn.className = 'add-btn cl-add-cell'; addBtn.style.display = staffUnlocked ? 'block' : 'none';
+      addBtn.className = 'add-btn'; addBtn.style.display = 'none';
       addBtn.textContent = '+ Lägg till';
       addBtn.addEventListener('click', () => openModal(item));
 
@@ -726,37 +727,7 @@ document.getElementById('modal-cancel').addEventListener('click', closeModal);
 document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeModal(); });
 
 // --- Lösenord ---
-if (checkPwd(pwd)) {
-    sessionStorage.setItem('cl_auth', '1');
-    document.getElementById('main-content').style.display = 'block';
-    init();
-  } else {
-    document.getElementById('pwd-err').style.display = 'block';
-    
-    
-  }
-});
-});
 
-// --- Personal-läge ---
-function toggleStaff() {
-  if (staffUnlocked) {
-    staffUnlocked = false;
-    document.getElementById('staff-toggle').textContent = '✏️ Personal';
-    document.getElementById('staff-toggle').style.opacity = '0.6';
-    document.getElementById('global-add-tech-btn').style.display = 'none';
-    // Dölj + Lägg till på checklistrader
-    document.querySelectorAll('.cl-add-cell').forEach(el => el.style.display = 'none');
-  } else {
-    const pwd = prompt('Lösenord:');
-    if (!pwd || !checkPwd(pwd)) { alert('Fel lösenord!'); return; }
-    staffUnlocked = true;
-    document.getElementById('staff-toggle').textContent = '🔒 Logga ut';
-    document.getElementById('staff-toggle').style.opacity = '1';
-    document.getElementById('global-add-tech-btn').style.display = 'inline-flex';
-    document.querySelectorAll('.cl-add-cell').forEach(el => el.style.display = 'block');
-  }
-}
 
 async function init() {
   document.getElementById('overview-container').innerHTML = '<div class="loading-msg">Hämtar checklistor…</div>';
