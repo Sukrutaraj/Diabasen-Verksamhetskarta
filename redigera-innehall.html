@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redigera innehåll – Diabasen</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 24px 16px 60px; }
+        .box { max-width: 700px; margin: 0 auto; }
+        .back-link { margin-bottom: 18px; }
+        .back-link a { color: #2c5f8a; text-decoration: none; font-size: 0.9rem; font-weight: 600; }
+        h1 { font-size: 1.3rem; color: #2c3e50; margin: 0 0 6px; }
+        .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 22px; }
+
+        .card { background: #fff; border-radius: 12px; padding: 22px 22px 20px; border: 1px solid #e0e6ed; margin-bottom: 18px; }
+
+        label { font-size: 0.85rem; font-weight: 700; color: #555; display: block; margin: 12px 0 5px; }
+        select, input, textarea {
+            width: 100%; padding: 9px 12px; border: 1.5px solid #d0d7de;
+            border-radius: 8px; font-size: 0.93rem; font-family: inherit; background: #fafbfc;
+        }
+        textarea { resize: vertical; }
+        select:focus, input:focus, textarea:focus { outline: none; border-color: #2c5f8a; background: #fff; }
+        .hint { font-size: 0.78rem; color: #888; margin-top: 3px; }
+
+        .btn { padding: 10px 20px; background: #2c5f8a; color: #fff; border: none; border-radius: 9px; font-size: 0.93rem; font-weight: 700; cursor: pointer; }
+        .btn:hover:not(:disabled) { background: #1e4a6e; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-secondary { background: #f0f0f0; color: #555; }
+        .btn-secondary:hover { background: #e0e0e0; }
+        .btn-danger { background: #fde8e8; color: #a12020; border: 1px solid #f5b8b8; }
+        .btn-danger:hover { background: #fad0d0; }
+
+        .block {
+            border: 1.5px solid #e0e6ed; border-radius: 10px; padding: 16px;
+            margin-bottom: 14px; background: #fafbfc; position: relative;
+        }
+        .block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .block-title { font-size: 0.8rem; font-weight: 700; color: #2c5f8a; }
+        .remove-block-btn {
+            background: none; border: none; color: #a12020; cursor: pointer;
+            font-size: 0.85rem; padding: 2px 6px;
+        }
+        .remove-block-btn:hover { text-decoration: underline; }
+
+        .add-block-btn {
+            background: none; border: 1.5px dashed #aac4de; color: #2c5f8a;
+            border-radius: 20px; padding: 7px 16px; font-size: 0.85rem; font-weight: 700;
+            cursor: pointer; font-family: inherit; margin-top: 6px;
+        }
+        .add-block-btn:hover { background: #e8f0f8; }
+
+        .err { color: #a12020; background: #fde8e8; border: 1px solid #f5b8b8; border-radius: 7px; padding: 8px 12px; margin-top: 12px; display: none; font-size: 0.88rem; }
+        .ok { color: #1b6b2f; background: #e6f4ea; border: 1px solid #b7dfbf; border-radius: 7px; padding: 8px 12px; margin-top: 12px; display: none; font-size: 0.88rem; }
+        .loading { color: #888; font-size: 0.9rem; padding: 10px 0; }
+
+        .action-row { display: flex; gap: 10px; margin-top: 18px; }
+
+        #editor-area { display: none; }
+        .pwd-row { display: flex; gap: 10px; align-items: flex-end; }
+        .pwd-row input { flex: 1; }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <div class="back-link"><a href="om-diabasen.html">← Tillbaka till Om Diabasen</a></div>
+    <h1>✏️ Redigera innehåll</h1>
+    <div class="subtitle">Uppdatera texten på gruppsidorna. Layout och bilder ändras inte.</div>
+
+    <div class="card">
+        <label>Välj grupp</label>
+        <select id="group-select">
+            <option value="">— Välj grupp —</option>
+            <option value="grupp1">Grupp 1</option>
+            <option value="grupp2">Grupp 2</option>
+            <option value="grupp3">Grupp 3</option>
+            <option value="grupp45">Grupp 4 & 5</option>
+            <option value="matsalen">Matsalen</option>
+            <option value="slangbellan">Teater Slångbellan</option>
+            <option value="studion">Studion</option>
+        </select>
+
+        <label>Välj sida</label>
+        <select id="page-select">
+            <option value="">— Välj sida —</option>
+            <option value="main">Om gruppen (huvudsida)</option>
+            <option value="mer">Mer om gruppen</option>
+            <option value="kompetens">Special kompetens</option>
+        </select>
+
+        <label>Lösenord</label>
+        <div class="pwd-row">
+            <input type="password" id="pwd" placeholder="Ange lösenord">
+            <button class="btn" id="load-btn">Hämta sida</button>
+        </div>
+        <div class="err" id="load-err"></div>
+    </div>
+
+    <div id="editor-area">
+        <div class="card" id="meta-card">
+            <!-- Fylls dynamiskt: titel, specialisering etc beroende på sidtyp -->
+        </div>
+
+        <div id="blocks-container"></div>
+
+        <button class="add-block-btn" id="add-block-btn">+ Lägg till sektion</button>
+
+        <div class="action-row">
+            <button class="btn" id="save-btn">💾 Spara ändringar</button>
+            <button class="btn btn-secondary" id="cancel-btn">Avbryt</button>
+        </div>
+        <div class="err" id="save-err"></div>
+        <div class="ok" id="save-ok"></div>
+    </div>
+</div>
+
+<script>
+const REPO = 'sukrutaraj/Diabasen-Verksamhetskarta';
+const BRANCH = 'main';
+const API = 'https://api.github.com/repos/' + REPO + '/contents/';
+const BASE = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
+const PWD_HASH = '79b497e2';
+const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a3363037702605532085a5f005a5b6e';
+
+const GROUP_NAMES = {
+  grupp1: 'Grupp 1', grupp2: 'Grupp 2', grupp3: 'Grupp 3', grupp45: 'Grupp 4 & 5',
+  matsalen: 'Matsalen', slangbellan: 'Teater Slångbellan', studion: 'Studion'
+};
+const GROUP_BACK = {
+  grupp1: '../index.html', grupp2: '../index.html', grupp3: '../index.html', grupp45: '../index.html',
+  matsalen: '../index.html', slangbellan: '../index.html', studion: '../index.html'
+};
+
+function checkPwd(pwd) {
+  let h = 0;
+  for (let i = 0; i < pwd.length; i++) h = (Math.imul(31, h) + pwd.charCodeAt(i)) | 0;
+  return Math.abs(h).toString(16) === PWD_HASH;
+}
+function xorStr(str, key) {
+  let out = '';
+  for (let i = 0; i < str.length; i++) out += String.fromCharCode(str.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  return out;
+}
+function decodeToken(enc, pwd) {
+  return xorStr(enc.match(/.{1,2}/g).map(h => String.fromCharCode(parseInt(h, 16))).join(''), pwd);
+}
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function ghGet(path, token) {
+  const headers = { 'Accept': 'application/vnd.github.v3+json' };
+  if (token) headers['Authorization'] = 'token ' + token;
+  const r = await fetch(API + path + '?ref=' + BRANCH, { headers });
+  if (r.status === 404) return null;
+  if (!r.ok) return null;
+  return r.json();
+}
+async function ghPut(path, content, sha, message, token) {
+  const bytes = new TextEncoder().encode(content);
+  let binary = '';
+  bytes.forEach(b => binary += String.fromCharCode(b));
+  const b64 = btoa(binary);
+  const body = { message, content: b64, branch: BRANCH };
+  if (sha) body.sha = sha;
+  const r = await fetch(API + path, {
+    method: 'PUT',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.message || r.status); }
+  return r.json();
+}
+
+/* ============================================================
+   PARSE: Läs in befintlig HTML och plocka ut block (h2+p+ul)
+   ============================================================ */
+function parseSections(html) {
+  // Hitta innehållet i <section class="content-section ...">...</section>
+  const sectionMatch = html.match(/<section class="content-section[^"]*">([\s\S]*?)<\/section>/);
+  if (!sectionMatch) return [];
+
+  const inner = sectionMatch[1];
+
+  // Dela upp på <h2> som markörer. Om inget h2 finns, hela inner är ett block utan rubrik.
+  const blocks = [];
+  const h2Regex = /<h2>([\s\S]*?)<\/h2>/g;
+  const h2Matches = [...inner.matchAll(h2Regex)];
+
+  if (h2Matches.length === 0) {
+    blocks.push(extractBlockContent(inner, ''));
+  } else {
+    for (let i = 0; i < h2Matches.length; i++) {
+      const heading = h2Matches[i][1].trim();
+      const start = h2Matches[i].index + h2Matches[i][0].length;
+      const end = (i + 1 < h2Matches.length) ? h2Matches[i + 1].index : inner.length;
+      const chunk = inner.slice(start, end);
+      blocks.push(extractBlockContent(chunk, heading));
+    }
+  }
+  return blocks;
+}
+
+function extractBlockContent(chunk, heading) {
+  // Plocka ut alla <p>...</p>
+  const paraMatches = [...chunk.matchAll(/<p>([\s\S]*?)<\/p>/g)];
+  const paragraphs = paraMatches.map(m => m[1].replace(/\s+/g, ' ').trim());
+
+  // Plocka ut <ul>...</ul> om finns
+  const ulMatch = chunk.match(/<ul>([\s\S]*?)<\/ul>/);
+  let points = [];
+  if (ulMatch) {
+    const liMatches = [...ulMatch[1].matchAll(/<li>([\s\S]*?)<\/li>/g)];
+    points = liMatches.map(m => m[1].replace(/\s+/g, ' ').trim());
+  }
+
+  return { heading, text: paragraphs.join('\n\n'), points: points.join('\n') };
+}
+
+/* ============================================================
+   GENERATE: Bygg HTML från block
+   ============================================================ */
+function renderParagraphs(text) {
+  return text.split(/\n\s*\n/).filter(p => p.trim()).map(p =>
+    '            <p>\n                ' + escHtml(p.trim()) + '\n            </p>'
+  ).join('\n\n');
+}
+function renderList(points) {
+  const items = points.split('\n').filter(p => p.trim());
+  if (items.length === 0) return '';
+  return '\n\n            <ul>\n' + items.map(p => '                <li>' + escHtml(p.trim()) + '</li>').join('\n') + '\n            </ul>';
+}
+
+function buildSectionInner(blocks, leftAlign) {
+  return blocks.map(b => {
+    const heading = b.heading ? '            <h2>' + escHtml(b.heading) + '</h2>\n\n' : '';
+    const paras = renderParagraphs(b.text);
+    const list = renderList(b.points);
+    return heading + paras + list;
+  }).join('\n\n');
+}
+
+function generateMainPage(groupId, title, specialization, blocks) {
+  const groupName = GROUP_NAMES[groupId];
+  const sectionInner = buildSectionInner(blocks, false);
+  return `<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Diabasen – ${escHtml(groupName)}</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <!-- Tillbaka -->
+    <div class="back-link">
+        <a href="../index.html">← Tillbaka till kartan</a>
+    </div>
+
+    <!-- Läs upp -->
+  <div class="read-top">
+
+<button class="read-button stop-button" onclick="toggleRead()">
+🔊 Svenska
+</button>
+
+<button class="read-button read-btn-en" onclick="readEnglish()">
+🔊 English
+</button>
+
+<button class="read-button read-btn-ar" onclick="readArabic()">
+🔊 العربية
+</button>
+
+<button class="read-button read-btn-so" onclick="readSomali()">
+🔊 Somali
+</button>
+
+</div>
+
+    <!-- Rubrik -->
+    <h1>${escHtml(title)}</h1>
+
+    <!-- Specialisering -->
+    <p class="specialization">
+        ${escHtml(specialization)}
+    </p>
+
+    <!-- Bild -->
+    <div class="room-image">
+        <img src="../images/${groupId}.png" alt="${escHtml(groupName)}">
+    </div>
+
+    <!-- Allt som ska läsas -->
+    <div class="readable-content">
+
+        <section class="content-section">
+${sectionInner}
+        </section>
+
+    </div>
+
+    <div class="button-row">
+        <a href="${groupId}-teknik.html" class="action-button">Teknik i rummet</a>
+        <a href="${groupId}-mer.html" class="action-button">Mer om gruppen</a>
+        <a href="${groupId}-kompetens.html" class="action-button">Special kompetens</a>
+    </div>
+
+    <!-- Endast det nya scriptet -->
+    <script src="../js/read.js"><\/script>
+
+</body>
+</html>
+`;
+}
+
+function generateSimplePage(groupId, pageTitle, blocks, leftAlign) {
+  const groupName = GROUP_NAMES[groupId];
+  const sectionClass = leftAlign ? 'content-section left' : 'content-section';
+  const sectionInner = buildSectionInner(blocks, leftAlign);
+  return `<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>${escHtml(groupName)} – ${escHtml(pageTitle)}</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+    <!-- Tillbaka -->
+    <div class="back-link">
+        <a href="${groupId}.html">← Tillbaka till ${escHtml(groupName)}</a>
+    </div>
+
+    <!-- Läs upp -->
+   <div class="read-top">
+
+<button class="read-button stop-button" onclick="toggleRead()">
+🔊 Svenska
+</button>
+
+<button class="read-button read-btn-en" onclick="readEnglish()">
+🔊 English
+</button>
+
+<button class="read-button read-btn-ar" onclick="readArabic()">
+🔊 العربية
+</button>
+
+<button class="read-button read-btn-so" onclick="readSomali()">
+🔊 Somali
+</button>
+
+</div>
+
+    <h1>${escHtml(pageTitle)}</h1>
+
+    <!-- Allt som ska läsas -->
+    <div class="readable-content">
+
+        <section class="${sectionClass}">
+
+${sectionInner}
+
+        </section>
+
+    </div>
+
+    <script src="../js/read.js"><\/script>
+
+</body>
+</html>
+`;
+}
+
+/* ============================================================
+   UI – Block-rendering
+   ============================================================ */
+let currentBlocks = [];
+let currentFile = '';
+let currentToken = '';
+let currentPageType = '';
+let currentGroupId = '';
+
+function renderBlocks() {
+  const container = document.getElementById('blocks-container');
+  container.innerHTML = '';
+  currentBlocks.forEach((block, i) => {
+    const div = document.createElement('div');
+    div.className = 'block';
+    div.innerHTML = `
+      <div class="block-header">
+        <span class="block-title">Sektion ${i + 1}</span>
+        <button class="remove-block-btn" data-i="${i}">✕ Ta bort sektion</button>
+      </div>
+      <label>Rubrik (valfri)</label>
+      <input type="text" class="block-heading" value="${escHtml(block.heading || '')}" placeholder="T.ex. Hur gruppen arbetar">
+      <label>Text (separera stycken med blankrad)</label>
+      <textarea class="block-text" rows="4">${escHtml(block.text || '')}</textarea>
+      <label>Punktlista (en rad per punkt, valfritt)</label>
+      <textarea class="block-points" rows="3">${escHtml(block.points || '')}</textarea>
+    `;
+    div.querySelector('.remove-block-btn').addEventListener('click', () => {
+      currentBlocks.splice(i, 1);
+      renderBlocks();
+    });
+    container.appendChild(div);
+  });
+}
+
+function collectBlocksFromUI() {
+  const blockDivs = document.querySelectorAll('#blocks-container .block');
+  return [...blockDivs].map(div => ({
+    heading: div.querySelector('.block-heading').value.trim(),
+    text: div.querySelector('.block-text').value.trim(),
+    points: div.querySelector('.block-points').value.trim()
+  }));
+}
+
+document.getElementById('add-block-btn').addEventListener('click', () => {
+  currentBlocks = collectBlocksFromUI();
+  currentBlocks.push({ heading: '', text: '', points: '' });
+  renderBlocks();
+});
+
+/* ============================================================
+   LADDA SIDA
+   ============================================================ */
+document.getElementById('load-btn').addEventListener('click', async () => {
+  const groupId = document.getElementById('group-select').value;
+  const pageType = document.getElementById('page-select').value;
+  const pwd = document.getElementById('pwd').value.trim();
+  const err = document.getElementById('load-err');
+  err.style.display = 'none';
+
+  if (!groupId) { err.textContent = 'Välj en grupp.'; err.style.display = 'block'; return; }
+  if (!pageType) { err.textContent = 'Välj en sida.'; err.style.display = 'block'; return; }
+  if (!pwd) { err.textContent = 'Ange lösenord.'; err.style.display = 'block'; return; }
+  if (!checkPwd(pwd)) { err.textContent = 'Fel lösenord!'; err.style.display = 'block'; return; }
+
+  currentToken = decodeToken(TOKEN_ENC, pwd);
+  currentGroupId = groupId;
+  currentPageType = pageType;
+
+  const fileMap = { main: groupId + '.html', mer: groupId + '-mer.html', kompetens: groupId + '-kompetens.html' };
+  currentFile = 'groups/' + fileMap[pageType];
+
+  const btn = document.getElementById('load-btn');
+  btn.disabled = true;
+  btn.textContent = 'Hämtar…';
+
+  try {
+    const fileData = await ghGet(currentFile, currentToken);
+    if (!fileData) throw new Error('Sidan hittades inte.');
+    const html = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
+
+    currentBlocks = parseSections(html);
+
+    // Bygg meta-card beroende på sidtyp
+    const metaCard = document.getElementById('meta-card');
+    if (pageType === 'main') {
+      const titleMatch = html.match(/<h1>([\s\S]*?)<\/h1>/);
+      const specMatch = html.match(/<p class="specialization">([\s\S]*?)<\/p>/);
+      metaCard.innerHTML = `
+        <label>Rubrik</label>
+        <input type="text" id="meta-title" value="${escHtml(titleMatch ? titleMatch[1].trim() : '')}">
+        <label>Specialisering (kort beskrivning under rubriken)</label>
+        <textarea id="meta-spec" rows="2">${escHtml(specMatch ? specMatch[1].trim() : '')}</textarea>
+      `;
+    } else {
+      const pageTitle = pageType === 'mer' ? 'Mer om gruppen' : 'Special kompetens';
+      metaCard.innerHTML = `<div class="hint">Redigerar: <strong>${GROUP_NAMES[groupId]} – ${pageTitle}</strong></div>`;
+    }
+
+    renderBlocks();
+    document.getElementById('editor-area').style.display = 'block';
+    document.getElementById('editor-area').scrollIntoView({ behavior: 'smooth' });
+  } catch(e) {
+    err.textContent = 'Fel: ' + e.message;
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Hämta sida';
+  }
+});
+
+/* ============================================================
+   SPARA
+   ============================================================ */
+document.getElementById('save-btn').addEventListener('click', async () => {
+  const err = document.getElementById('save-err');
+  const ok = document.getElementById('save-ok');
+  err.style.display = 'none';
+  ok.style.display = 'none';
+
+  const blocks = collectBlocksFromUI();
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sparar…';
+
+  try {
+    let html;
+    if (currentPageType === 'main') {
+      const title = document.getElementById('meta-title').value.trim();
+      const spec = document.getElementById('meta-spec').value.trim();
+      html = generateMainPage(currentGroupId, title, spec, blocks);
+    } else {
+      const pageTitle = currentPageType === 'mer' ? 'Mer om gruppen' : 'Special kompetens';
+      const leftAlign = currentPageType === 'mer';
+      html = generateSimplePage(currentGroupId, pageTitle, blocks, leftAlign);
+    }
+
+    const existing = await ghGet(currentFile, currentToken);
+    await ghPut(currentFile, html, existing ? existing.sha : null, 'Uppdaterade ' + currentFile, currentToken);
+
+    ok.textContent = '✅ Sparat! Ändringarna syns inom 1–2 minuter.';
+    ok.style.display = 'block';
+  } catch(e) {
+    err.textContent = 'Fel: ' + e.message;
+    err.style.display = 'block';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Spara ändringar';
+  }
+});
+
+document.getElementById('cancel-btn').addEventListener('click', () => {
+  document.getElementById('editor-area').style.display = 'none';
+  document.getElementById('group-select').value = '';
+  document.getElementById('page-select').value = '';
+  document.getElementById('pwd').value = '';
+});
+</script>
+
+</body>
+</html>
