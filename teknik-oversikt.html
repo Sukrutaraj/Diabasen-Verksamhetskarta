@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tekniköversikt – Nilis</title>
+  <title>Tekniköversikt – Diabasen</title>
   <link rel="stylesheet" href="css/style.css">
   <style>
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 0; }
@@ -317,7 +317,7 @@
 <div class="main-content" id="main-content">
   <div class="page-container">
     <div class="back-link"><a href="index.html">← Tillbaka till kartan</a></div>
-    <h1>📋 Tekniköversikt – Nilis</h1>
+    <h1>📋 Tekniköversikt – Diabasen</h1>
     <p class="subtitle">Alla teknikchecklistor samlade. Gröna märken = checklista finns. Klicka "+ Lägg till" för att lägga till fler.</p>
     <div class="add-tech-bar"><button class="add-tech-btn" id="global-add-tech-btn">➕ Lägg till ny teknik</button></div>
     <div class="stats-bar" id="stats-bar"><div class="stat">Laddar…</div></div>
@@ -343,10 +343,13 @@
       <label class="tc-label">Välj grupp</label>
       <select class="tc-select" id="global-tc-group">
         <option value="">— Välj grupp —</option>
-        <option value="fonster|Fönstergruppen|groups/fonster-teknik.html">Fönstergruppen</option>
-        <option value="orngrupp|Örngruppen|groups/orngrupp-teknik.html">Örngruppen</option>
-        <option value="skrylle|Skryllegruppen|groups/skrylle-teknik.html">Skryllegruppen</option>
-        <option value="transport|Transportgruppen|groups/transport-teknik.html">Transportgruppen</option>
+        <option value="grupp1|Grupp 1|groups/grupp1-teknik.html">Grupp 1</option>
+        <option value="grupp2|Grupp 2|groups/grupp2-teknik.html">Grupp 2</option>
+        <option value="grupp3|Grupp 3|groups/grupp3-teknik.html">Grupp 3</option>
+        <option value="grupp45|Grupp 4 & 5|groups/grupp45-teknik.html">Grupp 4 & 5</option>
+        <option value="matsalen|Matsalen|groups/matsalen-teknik.html">Matsalen</option>
+        <option value="slangbellan|Teater Slangbellan|groups/slangbellan-teknik.html">Teater Slangbellan</option>
+        <option value="studion|Studion|groups/studion-teknik.html">Studion</option>
         <option value="ovrigt|Övrig teknik|">Övrig teknik (ingen gruppsida)</option>
       </select>
 
@@ -431,7 +434,7 @@
 </div>
 
 <script>
-const REPO      = 'sukrutaraj/Verksamhetskarta-Nilis';
+const REPO      = 'sukrutaraj/Diabasen-Verksamhetskarta';
 const BRANCH    = 'main';
 const FOLDER    = 'checklists';
 const BASE      = 'https://raw.githubusercontent.com/' + REPO + '/' + BRANCH + '/';
@@ -440,27 +443,40 @@ const TOKEN_ENC = '330d1b310b5c0772544317515c1f2127065001710013333a5a33630377026
 const PWD_HASH  = '79b497e2';
 
 const TECH_PAGES = [
-  { group: 'Fönster', items: [
-    { name: 'Datorer',            file: 'fonster-datorer' },
-    { name: 'Fliptavla',          file: 'fonster-fliptavla' },
-    { name: 'iPad',               file: 'fonster-ipad' },
+  { group: 'Grupp 1', items: [
+    { name: '3D-skrivare',        file: 'grupp1-3d' },
+    { name: 'Datorer',            file: 'grupp1-datorer' },
+    { name: 'iPad & Mobil',       file: 'grupp1-mobil' },
+    { name: 'Musik & Inspelning', file: 'grupp1-musik' },
   ]},
-  { group: 'Örn', items: [
-    { name: 'Fliptavla',          file: 'orn-fliptavla' },
-    { name: 'Hörlurar',           file: 'orn-horlurar' },
-    { name: 'Mobiltelefoner',     file: 'orn-mobiltelefoner' },
-    { name: 'PlayStation',        file: 'orn-playstation' },
+  { group: 'Grupp 2', items: [
+    { name: 'Datorer',            file: 'grupp2-datorer' },
+    { name: 'Fliptavla',          file: 'grupp2-fliptavla' },
+    { name: 'iPad & Telefon',     file: 'grupp2-ipad' },
+    { name: 'Tidshjälpmedel',     file: 'grupp2-tid' },
+    { name: 'Touch',              file: 'grupp2-touch' },
   ]},
-  { group: 'Skrylle', items: [
-    { name: 'Fliptavla',          file: 'skrylle-fliptavla' },
-    { name: 'iPad',               file: 'skrylle-ipad' },
-    { name: 'Mobil',              file: 'skrylle-mobil' },
+  { group: 'Grupp 3', items: [
+    { name: 'Fliptavla',          file: 'grupp3-fliptavla' },
+    { name: 'iPad',               file: 'grupp3-ipad' },
   ]},
-  { group: 'Transport', items: [
-    { name: '3D-skrivare',        file: 'transport-3d' },
-    { name: 'Datorer',            file: 'transport-datorer' },
-    { name: 'Fliptavla',          file: 'transport-fliptavla' },
-    { name: 'iPad',               file: 'transport-ipad' },
+  { group: 'Grupp 4 & 5', items: [
+    { name: 'AI',                 file: 'grupp45-ai' },
+    { name: 'Datorer',            file: 'grupp45-datorer' },
+    { name: 'iPad',               file: 'grupp45-ipad' },
+    { name: 'Speldatorer',        file: 'grupp45-speldatorer' },
+  ]},
+  { group: 'Matsalen', items: [
+    { name: 'Datorer',            file: 'matsalen-datorer' },
+    { name: 'Fliptavla',          file: 'matsalen-flip' },
+  ]},
+  { group: 'Slangbellan', items: [
+    { name: '3D-skrivare',        file: 'slangbellan-3d' },
+    { name: 'Fliptavla',          file: 'slangbellan-fliptavla' },
+    { name: 'Info',               file: 'slangbellan-info' },
+    { name: 'Makey Makey',        file: 'slangbellan-makeymakey' },
+    { name: 'Mobil',              file: 'slangbellan-mobil' },
+    { name: 'Planering',          file: 'slangbellan-planering' },
   ]},
 ];
 
